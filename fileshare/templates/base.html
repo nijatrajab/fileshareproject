@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FS</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&display=swap"
+          rel="stylesheet">
+    <script src="https://kit.fontawesome.com/fe49569996.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'simplesocial/css/master.css' %}">
+</head>
+<body>
+<nav class="navbar mynav navbar-expand-lg navbar-light bg-light techfont custom-navbar" role="navigation" id="navbar">
+    <div class="container container-fluid collapse navbar-collapse">
+        <a class="navbar-brand mynav" href="{% url 'home' %}">FS</a>
+
+        <ul class="navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:file_upload' %}"> Upload File </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:my_files_list' %}"> My Files </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:all_files_list' %}"> All files </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}"> Logout </a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}"> Login </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}"> Sign up </a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+{#content block#}
+<div class="mycontent container">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

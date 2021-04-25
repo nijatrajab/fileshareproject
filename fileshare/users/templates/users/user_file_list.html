@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">My files</h1>
+        <b>{{ request.user.name }}</b>
+    </div>
+    {% csrf_token %}
+    {% if request.user.is_authenticated %}
+    <div class="py-5">
+        <div class="row">
+            {% for file in myfiles %}
+            {% if file.uploaded_by == request.user %}
+            <div class="col-md-3 container-fluid">
+                <a class="text-dark" href="{% url 'users:detail' slug=file.slug %}">
+                    <div class="card md-3 box-shadow">
+                        <div class="card-body">
+                            <h2 style="font-size:18px;font-weight:bold;min-height:42px;">
+                                {{file.title|truncatechars:50}}</h2>
+                            <h2 style="font-size:14px;font-weight:lighter;min-height:42px;">
+                                {{file.uploaded_by.email|truncatechars:50}}</h2>
+                            <div class="d-inline-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <a href="{{ file.browse_file.url }}" class="btn btn-primary btn-large"
+                                       target="_blank">
+                                        <span class="fas fa-download" aria-hidden="true"></span>
+                                    </a>
+                                </small>
+                                <small class="text-muted">
+                                    <a href="{% url 'users:delete' id=file.id %}" class="btn btn-danger btn-large"
+                                       target="_blank">
+                                        <span class="fas fa-trash" aria-hidden="true"></span>
+                                        <span class="text-danger icon-label"></span>
+                                    </a>
+                                </small>
+                                <small class="text-muted">
+                                    <a href="#" class="btn btn-info btn-large"
+                                       target="_blank">
+                                        <span class="fas fa-share" aria-hidden="true"></span>
+                                    </a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

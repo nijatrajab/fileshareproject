@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="">{% csrf_token %}
+    <h3>Are you sure you want to delete this file?</h3>
+    <div class="posts">
+        <input type="submit" value="Confirm" class="btn btn-danger btn-large">
+        <a href="users/all_files_list.html" class="btn btn btn-large">Cancel</a>
+    </div>
+</form>
+{% endblock %}

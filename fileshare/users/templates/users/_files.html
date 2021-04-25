@@ -1,0 +1,19 @@
+<div class="post media">
+    <div class="media-body">
+        <h5 class="media-heading"> saxhbaskhbasdhbasdkuew</h5>
+            <span class="username">
+                <a href="{% url 'users:all_files_list' %}"></a>
+            </span>
+            <time class="time">
+                <a href="{% url 'users:detail' name=request.user.name pk=request.user.id %}">wwueqrqirhwqieurwqyrgwqterqe</a>
+            </time>
+        <div class="media-footer">
+            {% if user.is_authenticated and post.user == user %}
+                <a href="{% url 'users:delete' pk=user.id %}" title="delete" class="btn btn-simple">
+                    <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+                    <span class="text-danger icon-label">Delete</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

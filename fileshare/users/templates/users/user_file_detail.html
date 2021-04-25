@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load guardian_tags %}
+
+{% block content %}
+{% get_obj_perms request.user for object as 'object_perms' %}
+<div>
+    <div>
+        <a href="{% url "users:all_files_list" %}">Back to home</a>
+    </div>
+    {% if "change_article" in object_perms %}
+    <a href="#">Update</a>
+    {% endif %}
+    {% if "delete_article" in object_perms %}
+    <a href="#">Delete</a>
+    {% endif %}
+    <div class="container" style="max-width:800px">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4">{{file.title}}</h1>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{object.uploaded_by}}</small>
+                <small class="text-muted">{{object.uploaded_at}}</small>
+                <small class="text-muted">{{object.browse_file.url}}
+                    <span class="fas fa-download" aria-hidden="true"></span>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

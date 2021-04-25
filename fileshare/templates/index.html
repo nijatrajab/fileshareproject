@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Welcome to File Share App</h1>
+    {% if request.user.is_authenticated %}
+        <div class="col-md-4">
+            <h3> User: {{ request.user.name }}</h3>
+        </div>
+    {% else %}
+        <div class="col-md-4">
+            <h3> You must login to see your files and shared with you ones</h3>
+        </div>
+    {% endif %}
+{% endblock %}

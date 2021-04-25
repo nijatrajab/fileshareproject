@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+<div class="container">
+    <h1>Upload your file</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit">Upload</button>
+    </form>
+
+    <p><a href="{% url 'home' %}">Return to home</a></p>
+</div>
+{% endblock %}

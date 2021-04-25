@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="">{% csrf_token %}
+    <h3>Share</h3>
+    <div class="posts">
+        <input type="submit" value="Confirm" class="btn btn-danger btn-large">
+        <a href="users/user_file_list.html" class="btn btn btn-large">Cancel</a>
+    </div>
+</form>
+{% endblock %}
