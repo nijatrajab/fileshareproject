@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="">{% csrf_token %}
+
+    <div class="container">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4">Users access</h1>
+
+        </div>
+        {% if request.user.is_authenticated %}
+
+        <div class="py-5">
+            <h5>Users</h5>
+            <div class="row">
+                <div class="list-group">
+
+
+                    <div class="container overflow-hidden">
+                        <div class="row gx-5">
+                            <div class="col">
+                                <div class="p-3 border bg-light">File ids</div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3 border bg-light">Users</div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3 border bg-light">Permission types</div>
+                            </div>
+                            <p></p>
+                        </div>
+                    </div>
+                    {% for acc in access %}
+                    <div class="container overflow-hidden">
+                        <div class="row gx-5">
+                            <div class="col">
+                                <div class="p-3 border bg-light">{{acc.object_pk}}</div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3 border bg-light">{{acc.user}}</div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3 border bg-light">{{acc.permission}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+    </div>
+</form>
+
+{% endblock %}

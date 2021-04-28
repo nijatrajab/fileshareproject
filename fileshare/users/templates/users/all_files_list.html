@@ -9,9 +9,11 @@
     {% if request.user.is_authenticated %}
     <div class="py-5">
         <div class="row">
-            {% for object in object_list %}
+            {% for object in files %}
             <div class="col-md-4">
+                {% if request.user == object.uploaded_by %}
                 <a class="text-dark" href="{{object.get_absolute_url}}">
+                    {% endif %}
                     <div class="card md-4 box-shadow">
                         <div class="card-body">
                             <h2 style="font-size:18px;font-weight:bold;min-height:42px;">
@@ -20,23 +22,17 @@
                                 {{object.uploaded_by.email|truncatechars:50}}</h2>
                             <div class="d-inline-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    <a href="{{ object.browse_file.url }}" class="btn btn-primary btn-large"
+                                    <a href="{{ object.browse_file.url }}" class="btn btn-outline-primary"
                                        target="_blank">
                                         <span class="fas fa-download" aria-hidden="true"></span>
                                     </a>
                                 </small>
-                                {% if object.uploaded_by == request.user %}
+                                {% if request.user == object.uploaded_by %}
                                 <small class="text-muted">
-                                    <a href="{% url 'users:delete' id=object.id %}" class="btn btn-danger btn-large"
+                                    <a href="{% url 'users:delete' slug=object.slug %}" class="btn btn-outline-danger"
                                        target="_blank">
                                         <span class="fas fa-trash" aria-hidden="true"></span>
                                         <span class="text-danger icon-label"></span>
-                                    </a>
-                                </small>
-                                <small class="text-muted">
-                                    <a href="#" class="btn btn-info btn-large"
-                                       target="_blank">
-                                        <span class="fas fa-share" aria-hidden="true"></span>
                                     </a>
                                 </small>
                                 {% endif %}

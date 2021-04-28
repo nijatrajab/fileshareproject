@@ -1,11 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="POST" action="">{% csrf_token %}
+<form method="POST" action="">
+    {% csrf_token %}
     <h3>Share</h3>
-    <div class="posts">
-        <input type="submit" value="Confirm" class="btn btn-danger btn-large">
-        <a href="users/user_file_list.html" class="btn btn btn-large">Cancel</a>
+    <div class="container">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4">Share with</h1>
+            <b>{{ request.user.name }}</b>
+        </div>
+        {% if request.user.is_authenticated %}
+
+        <div class="py-5">
+            <h5>Users</h5>
+            <div class="row">
+                <div class="list-group">
+
+                    {% for user in users %}
+                    <label class="list-group-item">
+                        <input class="form-check-input me-1" type="checkbox" class="user"
+                               value="{{user.email}}">
+                        {{user.email}}
+                    </label>
+
+                    {% endfor %}
+                    <input id="usermail" type="text" readonly>
+
+                    <input type="submit" value="Share" id="share_btn" class="btn btn-info btn-large">
+                    <a href="users/user_file_list.html" class="btn btn btn-large">Cancel</a>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
     </div>
 </form>
+
 {% endblock %}

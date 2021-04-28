@@ -1,63 +1,17 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
-from django.utils.decorators import method_decorator
-from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import redirect
 from django.views.generic import list, detail, edit, base
-# from django.contrib.auth.mixins import (LoginRequiredMixin,
-#                                         PermissionRequiredMixin)
-from braces.views import SelectRelatedMixin
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin, LoginRequiredMixin
-from guardian.forms import UserObjectPermissionsForm
-from guardian.shortcuts import assign_perm
-from django.http import Http404, HttpResponseForbidden
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import Group
+from guardian.shortcuts import assign_perm, remove_perm
+from guardian.models import UserObjectPermission
+from django.contrib.auth.decorators import login_required
 
-from .models import User, UserFiles, UserManager
+from .models import User, UserFiles
 from .forms import UserCreationForm
 from fileshare.middleware import get_current_user
 
 CurrentUser = get_current_user()
-
-
-# \\\\\\\\\\\\\\\\\\\\\\\\\\
-# class UserAccessMixin(PermissionRequiredMixin):
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         if (not self.request.user.is_authenticated):
-#             return redirect_to_login(self.request.get_full_path(),
-#                                      self.get_login_url(),
-#                                      self.redirect_field_name())
-#
-#         if not self.has_permission():
-#             return redirect('/')
-#         return super(UserAccessMixin, self).dispatch(request, *args, **kwargs)
-
-
-# from django.contrib.auth.models import Permission
-# from django.contrib.contenttypes.models import ContentType
-
-
-# content_type = ContentType.objects.get_for_model(UserFiles)
-# permission = Permission.objects.create(
-#     codename='can_view',
-#     name='Can view files',
-#     content_type=content_type,
-# )
-
-# def user_gains_perms(request, id):
-#     users = get_object_or_404(User, id=id)
-#     content_type = ContentType.objects.get_for_model(UserFiles)
-#     permission = Permission.objects.get(
-#         codename='view_userfiles',
-#         content_type=content_type,
-#     )
-#     if request.method == "POST":
-#         users.user_permissions.add(permission)
-#         return redirect('users:my_files_list')
-#     context = {'users': users}
-#     return render(request, 'users/file_share_with.html', context)
 
 
 class SignUp(edit.CreateView):
@@ -76,31 +30,13 @@ class HomeView(LoginRequiredMixin, base.View):
             return super(HomeView, self).dispatch(request, *args, **kwargs)
 
 
-# class FileUploadView(LoginRequiredMixin, base.View):
-#     form_class = UserFilesForm
-#     success_url = reverse_lazy('home')
-#     template_name = 'users/file_upload.html'
-#
-#     def get(self, request, *args, **kwargs):
-#         form = self.form_class()
-#         return render(request, self.template_name, {'form': form})
-#
-#     def post(self, request, *args, **kwargs):
-#         form = self.form_class(request.POST, request.FILES)
-#         user = self.request.user
-#         if form.is_valid():
-#             form.save()
-#
-#             return redirect(self.success_url)
-#         else:
-#             return render(request, self.template_name, {'form': form})
-class FilesList(PermissionListMixin, list.ListView):
+class AllFilesList(PermissionListMixin, list.ListView):
     model = UserFiles
     login_url = ''
     permission_required = ['users.view_userfiles', ]
 
     template_name = 'users/all_files_list.html'
-    context_object_name = 'myfiles'
+    context_object_name = 'files'
     raise_exception = False
     permission_denied_message = 'You have not permission to see this'
     redirect_field_name = 'next'
@@ -108,7 +44,11 @@ class FilesList(PermissionListMixin, list.ListView):
 
 class FileDetail(PermissionRequiredMixin, detail.DetailView):
     model = UserFiles
-    permission_required = ['users.view_userfiles', ]
+    users = User.objects.all()
+    permission_required = ['view_userfiles', 'delete_userfiles']
+    template_name = 'users/user_file_detail.html'
+    context_object_name = 'files'
+    extra_context = {'users': users}
 
 
 class FileUploadView(PermissionRequiredMixin, edit.CreateView):
@@ -116,7 +56,7 @@ class FileUploadView(PermissionRequiredMixin, edit.CreateView):
     permission_object = None
     permission_required = ['users.add_userfiles']
     template_name = 'users/file_upload.html'
-    fields = ['browse_file', 'title']
+    fields = ['browse_file', 'title', 'description']
     success_url = reverse_lazy('home')
 
     def form_valid(self, *args, **kwargs):
@@ -127,24 +67,48 @@ class FileUploadView(PermissionRequiredMixin, edit.CreateView):
         return resp
 
 
-class MyFilesList(LoginRequiredMixin, list.ListView):
-    model = UserFiles
-    template_name = 'users/user_file_list.html'
-    context_object_name = 'myfiles'
-
-
 class UserFilesDeleteView(PermissionRequiredMixin, edit.DeleteView):
     model = UserFiles
     success_url = reverse_lazy('users:all_files_list')
     permission_required = ['view_userfiles', 'delete_userfiles']
-    template_name = 'users/user_file_detail'
+    template_name = 'users/file_delete_confirm.html'
 
 
-def FileDeleteView(request, id):
-    files = get_object_or_404(UserFiles, id=id)
-    if request.method == "POST":
-        files.delete()
-        return redirect('users:all_files_list')
+class Access(PermissionRequiredMixin, list.ListView):
+    model = UserObjectPermission
+    login_url = ''
+    permission_required = ['is_staff', ]
 
-    context = {'files': files}
-    return render(request, 'users/file_delete_confirm.html', context)
+    template_name = 'users/access_user.html'
+    context_object_name = 'access'
+    raise_exception = False
+    permission_denied_message = 'You have not permission to see this'
+    redirect_field_name = 'next'
+
+
+@login_required()
+def myfiles(request):
+    user = request.user
+    files = UserFiles.objects.filter(uploaded_by=user).all()
+    users = User.objects.all()
+    return render(request, 'users/user_file_list.html', {'files': files, 'users': users})
+
+
+@login_required()
+def share_file(request, id):
+    obj = UserFiles.objects.get(id=id)
+    email = request.POST.get('email')
+    usobj = User.objects.get(email=email)
+    permtype = request.POST.get('permission')
+    assign_perm(permtype, usobj, obj)
+    return redirect(reverse('users:my_files_list'))
+
+
+@login_required()
+def revoke_access(request, id):
+    obj = UserFiles.objects.get(id=id)
+    email = request.POST.get('email')
+    usobj = User.objects.get(email=email)
+    permtype = request.POST.get('permission')
+    remove_perm(permtype, usobj, obj)
+    return redirect(reverse('users:my_files_list'))

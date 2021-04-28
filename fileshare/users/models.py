@@ -7,11 +7,6 @@ from django.contrib.auth.models import (BaseUserManager,
 from fileshare.middleware import get_current_user
 from django.template.defaultfilters import slugify
 from django.urls import reverse
-from guardian.models import GroupObjectPermissionBase, UserObjectPermissionBase
-from guardian.models import UserObjectPermissionAbstract, GroupObjectPermissionAbstract
-
-from django.db.models import Manager
-from django.db.models.query import EmptyQuerySet
 
 
 def user_directory_path(instance, filename):
@@ -63,8 +58,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserFiles(models.Model):
-    browse_file = models.FileField(upload_to=user_directory_path)
     title = models.CharField(max_length=50)
+    browse_file = models.FileField(upload_to=user_directory_path)
+    description = models.CharField(max_length=500, null=True, blank=True)
     slug = models.SlugField(null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -73,17 +69,13 @@ class UserFiles(models.Model):
                                     blank=True,
                                     null=True,
                                     default=None)
-    access_user = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                         blank=True,
-                                         null=True,
-                                         default=None)
 
     class Meta:
         default_permissions = ('add', 'change', 'delete')
         permissions = (
             ('view_userfiles', 'Can view userfiles'),
         )
-        get_latest_by = 'created_at'
+        get_latest_by = 'uploaded_at'
 
     def save(self, *args, **kwargs):
         user = get_current_user()
@@ -91,8 +83,6 @@ class UserFiles(models.Model):
             user = None
         if not self.pk:
             self.uploaded_by = user
-        # if user == self.uploaded_by:
-        #     user.groups.add(1)
         if not self.slug:
             self.slug = slugify(self.title)
         return super(UserFiles, self).save(*args, **kwargs)
@@ -102,18 +92,3 @@ class UserFiles(models.Model):
 
     def __str__(self):
         return self.title
-
-class UserFilesUserObjectPermission(UserObjectPermissionBase):
-    content_object = models.ForeignKey(UserFiles, on_delete=models.CASCADE)
-
-class BigUserObjectPermission(UserObjectPermissionAbstract):
-    id = models.BigAutoField(editable=False, unique=True, primary_key=True)
-
-    class Meta(UserObjectPermissionAbstract.Meta):
-        abstract = False
-        indexes = [
-            *UserObjectPermissionAbstract.Meta.indexes,
-            models.Index(fields=['content_type', 'object_pk', 'user']),
-        ]
-
-# class UserFilesPermissions()
