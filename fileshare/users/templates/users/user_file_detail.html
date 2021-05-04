@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load guardian_tags %}
 {% block content %}
+
 <div>
     <div class="container-fluid" style="max-width:800px">
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -43,9 +44,9 @@
                                     <form class="px-3 py-4" method="POST"
                                           action="{% url 'users:share' id=object.id %}">
                                         {% csrf_token %}
-                                        <div class="form-group">
+                                        <div class="form-group multi_select_box">
                                             <label for="email">Send to</label>
-                                            <select class="form-control" id="email" name="email">
+                                            <select class="form-control multi_select w-100" multiple="multiple" id="email" name="email">
                                                 {% for user in users %}
                                                 {% get_obj_perms user for object as 'userfiles_perms' %}
                                                 {% if not "view_userfiles" in userfiles_perms %}
@@ -63,7 +64,6 @@
                                         <button class="btn btn-outline-info fas fa-share"
                                                 aria-hidden="true"></button>
                                     </form>
-
                                 </div>
                             </div>
                         </small>
@@ -72,7 +72,7 @@
                 {% endif %}
             </div>
         </div>
-        <p</p>
+        <p/>
         <div class="alert alert-warning align-items-center" role="alert">
             <p class="text-center">Description</p>
         </div>
@@ -88,6 +88,7 @@
                     <th scope="col">Revoke</th>
                 </tr>
                 </thead>
+
                 {% for user in users %}
                 {% if not user.is_superuser and not object.uploaded_by == user %}
                 {% get_obj_perms user for files as 'userfiles_perms' %}
@@ -128,6 +129,5 @@
             </table>
         </div>
     </div>
-
-
-    {% endblock %}
+</div>
+{% endblock %}

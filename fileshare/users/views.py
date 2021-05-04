@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import list, detail, edit, base
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin, LoginRequiredMixin
 from guardian.shortcuts import assign_perm, remove_perm
 from guardian.models import UserObjectPermission
 from django.contrib.auth.decorators import login_required
+
 
 from .models import User, UserFiles
 from .forms import UserCreationForm
@@ -96,19 +97,25 @@ def myfiles(request):
 
 @login_required()
 def share_file(request, id):
+
+    emails = request.POST.getlist('email')
+    usobjs = User.objects.filter(email__in=emails)
     obj = UserFiles.objects.get(id=id)
-    email = request.POST.get('email')
-    usobj = User.objects.get(email=email)
     permtype = request.POST.get('permission')
-    assign_perm(permtype, usobj, obj)
-    return redirect(reverse('users:my_files_list'))
+
+    assign_perm(permtype, usobjs, obj)
+    return redirect(reverse('users:detail', kwargs={'slug': obj.slug}))
 
 
 @login_required()
 def revoke_access(request, id):
     obj = UserFiles.objects.get(id=id)
+
+    # emails = request.POST.getlist('email')
+    # usobjs = User.objects.filter(email__in=emails)
+
     email = request.POST.get('email')
     usobj = User.objects.get(email=email)
     permtype = request.POST.get('permission')
     remove_perm(permtype, usobj, obj)
-    return redirect(reverse('users:my_files_list'))
+    return redirect(reverse('users:detail', kwargs={'slug': obj.slug}))
