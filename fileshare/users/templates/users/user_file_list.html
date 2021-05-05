@@ -35,42 +35,39 @@
                                         <span class=""></span>
                                     </a>
                                 </small>
-                                <small class="text-muted">
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-info fas fa-share" type="button"
-                                                id="dropdownMenuButton"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <form class="px-2 py-1" method="POST"
-                                                  action="{% url 'users:share' id=object.id %}">
-                                                {% csrf_token %}
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-info fas fa-share" type="button"
+                                            id="dropdownMenuButton"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    </button>
+                                    <form method="POST"
+                                          action="{% url 'users:share' id=object.id %}">
+                                        {% csrf_token %}
 
-                                                <div class="form-group">
-                                                    <label for="email">Send to</label>
-                                                    <select class="form-control" id="email" name="email">
-                                                        {% for user in users %}
-                                                        {% get_obj_perms user for object as 'userfiles_perms' %}
-                                                        {% if not "view_userfiles" in userfiles_perms %}
-                                                        <option>{{user.email|truncatechars:50}}</option>
-                                                        {% endif %}
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-
-                                                <div class="form-group" style="display: none;">
-                                                    <label for="permission"></label>
-                                                    <select class="form-control" id="permission" name="permission">
-                                                        <option>view_userfiles</option>
-                                                    </select>
-                                                </div>
-                                                <button class="btn btn-outline-info fas fa-share text-danger icon-label"
+                                        <ul class="dropdown-menu checkbox-menu allow-focus">
+                                            <label for="email">Send to</label>
+                                            <li class="list-group-item list-group-item-dark">
+                                                {% for user in users %}
+                                                {% get_obj_perms user for object as 'userfiles_perms' %}
+                                                {% if not "view_userfiles" in userfiles_perms %}
+                                                <input type="checkbox" id="email" name="email"
+                                                       value="{{user.email|truncatechars:50}}">
+                                                {{user.email|truncatechars:50}}
+                                                {% endif %}
+                                                {% endfor %}
+                                            </li>
+                                            <li style="display: none;">
+                                                <label for="permission"></label>
+                                                <input id="permission" name="permission" value="view_userfiles"/>view_userfiles
+                                            </li>
+                                            <li>
+                                                <button class="btn btn-outline-info fas fa-share"
                                                         aria-hidden="true"></button>
+                                            </li>
 
-                                            </form>
-                                        </div>
-                                    </div>
-                                </small>
+                                        </ul>
+                                    </form>
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
