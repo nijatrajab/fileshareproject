@@ -5,6 +5,7 @@ from django.views.generic import list, detail, edit, base
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin, LoginRequiredMixin
 from guardian.shortcuts import assign_perm, remove_perm
 from guardian.models import UserObjectPermission
+from guardian.core import ObjectPermissionChecker
 from django.contrib.auth.decorators import login_required
 
 

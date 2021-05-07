@@ -6,7 +6,6 @@
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
             <h1 class="display-4">{{object.title}}</h1>
             <div class="align-items-center">
-
                 <div class="d-inline-flex  align-items-center">
                     <ul class="list-group">
                         <li class="list-group-item">File title</li>
@@ -14,9 +13,9 @@
                         <li class="list-group-item">File uploaded at</li>
                     </ul>
                     <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action">{{object.title}}</a>
-                        <a href="#" class="list-group-item list-group-item-action">{{object.uploaded_by}}</a>
-                        <a href="#" class="list-group-item list-group-item-action">{{object.uploaded_at}}</a>
+                        <a class="list-group-item list-group-item-action">{{object.title}}</a>
+                        <a class="list-group-item list-group-item-action">{{object.uploaded_by}}</a>
+                        <a class="list-group-item list-group-item-action">{{object.uploaded_at}}</a>
                     </div>
                     <div class="list-group">
                         <small class="text-muted">
@@ -30,33 +29,47 @@
                                     onclick="location.href='{% url 'users:delete' slug=object.slug %}'">
                             </button>
                         </small>
-                        <div class="dropdown">
+                        <div class="btn-group">
                             <button class="btn btn-outline-info fas fa-share" type="button"
-                                    id="dropdownMenuButton"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    id="dropdownMenuClickable"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside"
+                                    data-toggle="dropdown"
+                                    aria-expanded="false">
                             </button>
                             <form method="POST"
                                   action="{% url 'users:share' id=object.id %}">
                                 {% csrf_token %}
 
-                                <ul class="dropdown-menu checkbox-menu allow-focus">
-                                    <label for="email">Send to</label>
-                                    <li class="list-group-item list-group-item-dark">
-                                        {% for user in users %}
-                                        {% get_obj_perms user for object as 'userfiles_perms' %}
-                                        {% if not "view_userfiles" in userfiles_perms %}
-                                        <input type="checkbox" id="email" name="email"
+                                <ul class="dropdown-menu checkbox-menu allow-focus dd-menu"
+                                    aria-labelledby="dropdownMenuClickable">
+
+
+                                    {% for user in users %}
+                                    {% get_obj_perms user for object as 'userfiles_perms' %}
+                                    {% if not "view_userfiles" in userfiles_perms %}
+                                    <li class="list-group-item lgi-menu">
+
+                                        <input class="form-check-input me-1"
+                                               type="checkbox" id="email" name="email"
                                                value="{{user.email|truncatechars:50}}"> {{user.email|truncatechars:50}}
-                                        {% endif %}
-                                        {% endfor %}
                                     </li>
+                                    {% elif forloop.counter < 2 %}
+                                    <li class="list-group-item lgi-menu">You have already shared this file with all
+                                        users
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+
                                     <li style="display: none;">
                                         <label for="permission"></label>
                                         <input id="permission" name="permission" value="view_userfiles"/>view_userfiles
                                     </li>
-                                    <li>
-                                        <button class="btn btn-outline-info fas fa-share"
-                                                aria-hidden="true"></button>
+
+                                    <li class="list-group-item lgi-menu share-btn">
+                                        <button class="btn btn-outline-light"
+                                                aria-hidden="true">Share
+                                        </button>
                                     </li>
 
                                 </ul>
