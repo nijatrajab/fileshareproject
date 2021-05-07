@@ -60,3 +60,32 @@ body {
     font-weight: 500;
 }
 
+.dlt-modal {
+    position: absolute;
+    top: 18%;
+    right: 26.3%;
+    width: 500px;
+    height: 200px;
+    justify-content: center !important;
+    align-items: center !important;
+    background: rgba(0,0,0,0.9);
+    border: 5px solid rgba(217, 83, 79, 0.3);
+    border-radius: 20px;
+
+    background-clip: padding-box;
+
+    padding: 10px;
+    margin: 20px;
+
+    display: none;
+}
+
+.two-buttons {
+}
+
+
+
+.modal-text {
+    color: white;
+    display: block;
+}

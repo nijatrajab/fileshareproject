@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load guardian_tags %}
+
 {% block content %}
+
+
 <div>
     <div class="container-fluid" style="max-width:800px">
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -25,8 +28,8 @@
                         </small>
                         {% if object.uploaded_by == request.user %}
                         <small class="text-muted">
-                            <button class="btn btn-outline-danger fas fa-trash" type="button"
-                                    onclick="location.href='{% url 'users:delete' slug=object.slug %}'">
+                            <button id="dlt-button"
+                                    class="btn btn-outline-danger fas fa-trash" type="button">
                             </button>
                         </small>
                         <div class="btn-group">
@@ -138,6 +141,20 @@
             </table>
         </div>
     </div>
+
+    <div class="dlt-modal">
+        <h5 class="modal-text">Are you sure you want to delete {{files.title}} ?</h5>
+        <div class="two-buttons">
+            <form method="POST" action="{% url 'users:delete' slug=object.slug %}">
+                {% csrf_token %}
+                <button type="submit" value="Confirm" class="btn btn-outline-danger">Confirm</button>
+            </form>
+            <button class="btn btn-outline-light btn-large dlt-close">Cancel</button>
+        </div>
+
+    </div>
+
+
 </div>
 
 {% endblock %}

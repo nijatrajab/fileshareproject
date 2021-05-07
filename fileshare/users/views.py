@@ -44,6 +44,20 @@ class AllFilesList(PermissionListMixin, list.ListView):
     redirect_field_name = 'next'
 
 
+class MyFilesList(PermissionListMixin, list.ListView):
+    model = UserFiles
+    users = User.objects.all()
+    login_url = ''
+    permission_required = ['users.view_userfiles', 'users.delete_userfiles']
+
+    template_name = 'users/user_file_list.html'
+    context_object_name = 'files'
+    extra_context = {'users': users}
+    raise_exception = False
+    permission_denied_message = 'You have not permission to see this'
+    redirect_field_name = 'next'
+
+
 class FileDetail(PermissionRequiredMixin, detail.DetailView):
     model = UserFiles
     users = User.objects.all()
@@ -88,12 +102,12 @@ class Access(PermissionRequiredMixin, list.ListView):
     redirect_field_name = 'next'
 
 
-@login_required()
-def myfiles(request):
-    user = request.user
-    files = UserFiles.objects.filter(uploaded_by=user).all()
-    users = User.objects.all()
-    return render(request, 'users/user_file_list.html', {'files': files, 'users': users})
+# @login_required()
+# def myfiles(request):
+#     user = request.user
+#     files = UserFiles.objects.filter(uploaded_by=user).all()
+#     users = User.objects.all()
+#     return render(request, 'users/user_file_list.html', {'files': files, 'users': users})
 
 
 @login_required()

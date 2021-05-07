@@ -12,7 +12,9 @@ urlpatterns = [
     path('all_files/', views.AllFilesList.as_view(), name='all_files_list'),
     path('detail/<slug:slug>/', views.FileDetail.as_view(), name='detail'),
     path('delete/<slug:slug>/', views.UserFilesDeleteView.as_view(), name='delete'),
-    path('my_files/', views.myfiles, name='my_files_list'),
+    # path('my_files/', views.myfiles, name='my_files_list'),
+    path('my_files/', views.MyFilesList.as_view(), name='my_files_list'),
+
     path('my_files/share/<id>', views.share_file, name='share'),
     path('detail/revoke/<id>', views.revoke_access, name='revoke'),
 

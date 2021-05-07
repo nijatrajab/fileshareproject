@@ -4,54 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <title>FS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&display=swap"
           rel="stylesheet">
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+    <link rel='stylesheet'
+          href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+
 </head>
-    <body>
-        <nav class="navbar mynav navbar-expand-lg navbar-light bg-light techfont custom-navbar" role="navigation" id="navbar">
-            <div class="container container-fluid collapse navbar-collapse">
-                <a class="navbar-brand mynav" href="{% url 'home' %}">FS</a>
+<body>
+<nav class="navbar mynav navbar-expand-lg navbar-light bg-light techfont custom-navbar" role="navigation" id="navbar">
+    <div class="container container-fluid collapse navbar-collapse">
+        <a class="navbar-brand mynav" href="{% url 'home' %}">FS</a>
 
-                <ul class="navbar-nav navbar-right">
-                    {% if user.is_authenticated %}
-                    {% if request.user.is_superuser %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'users:access' %}"> Admin: {{request.user.name}} </a>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'users:file_upload' %}"> Upload File </a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'users:my_files_list' %}"> My Files </a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'users:all_files_list' %}"> All files </a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}"> Logout </a></li>
-                    {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}"> Login </a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}"> Sign up </a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
+        <ul class="navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            {% if request.user.is_superuser %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:access' %}"> Admin: {{request.user.name}} </a>
+            </li>
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:file_upload' %}"> Upload File </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:my_files_list' %}"> My Files </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:all_files_list' %}"> All files </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}"> Logout </a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}"> Login </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}"> Sign up </a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+{#content block#}
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+<script src="https://kit.fontawesome.com/fe49569996.js" crossorigin="anonymous"></script>
 
-        {#content block#}
-        <script src="https://code.jquery.com/jquery-3.6.0.js"
-                    integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-                integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-                crossorigin="anonymous"></script>
-        <script type="text/javascript"
-                src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
-        <script src="https://kit.fontawesome.com/fe49569996.js" crossorigin="anonymous"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script type="text/javascript"
-                src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
-        <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
-        <script src="{% static 'js/script.js' %}"></script>
-        {% block content %}
-        {% endblock %}
-
-    </body>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+<script src="{% static 'js/script.js' %}" type="text/javascript"></script>
+</body>
 </html>

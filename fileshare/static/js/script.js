@@ -1,7 +1,8 @@
-$(".checkbox-menu").on("change", "input[type='checkbox']", function() {
-   $(this).closest("li").toggleClass("active", this.checked);
+
+document.getElementById('dlt-button').addEventListener('click', function() {
+    document.querySelector('.dlt-modal').style.display = 'flex';
 });
 
-$(document).on('click', '.allow-focus', function (e) {
-  e.stopPropagation();
-});
+document.querySelector('.dlt-close').addEventListener('click', function(){
+    document.querySelector('.dlt-modal').style.display = 'none'
+})
