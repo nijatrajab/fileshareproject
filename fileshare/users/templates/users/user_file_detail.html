@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load guardian_tags %}
-
+{% load custom_tags  %}
 {% block content %}
 
 
@@ -14,11 +14,13 @@
                         <li class="list-group-item">File title</li>
                         <li class="list-group-item">File uploader</li>
                         <li class="list-group-item">File uploaded at</li>
+                        <li class="list-group-item">File size</li>
                     </ul>
                     <div class="list-group">
                         <a class="list-group-item list-group-item-action">{{object.title}}</a>
                         <a class="list-group-item list-group-item-action">{{object.uploaded_by}}</a>
                         <a class="list-group-item list-group-item-action">{{object.uploaded_at}}</a>
+                        <a class="list-group-item list-group-item-action">{{object.browse_file.size|sizify}}</a>
                     </div>
                     <div class="list-group">
                         <small class="text-muted">
