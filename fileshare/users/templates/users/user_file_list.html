@@ -1,41 +1,100 @@
 {% extends 'base.html' %}
 {% load guardian_tags %}
 {% block content %}
-<div class="container">
-    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-        <h1 class="display-4">My files</h1>
-        <b>{{ request.user.name }}</b>
-    </div>
-    {% if request.user.is_authenticated %}
-    <div class="py-5">
+<section class="ftco-section">
+    <div class="container">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4">My files</h1>
+            <b>{{ request.user.name }}</b>
+        </div>
+        {% if request.user.is_authenticated %}
         <div class="row">
-            {% for object in files %}
-            {% if object.uploaded_by == request.user %}
-            <div class="col-md-4">
-                <a class="text-dark" href="{{object.get_absolute_url}}">
-                    <div class="card md-4 box-shadow">
-                        <div class="card-body">
-                            <h2 style="font-size:18px;font-weight:bold;min-height:42px;">
-                                {{object.title|truncatechars:50}}</h2>
-                            <h2 style="font-size:14px;font-weight:lighter;min-height:42px;">
-                                {{object.uploaded_by.email|truncatechars:50}}</h2>
-                            <div class="d-inline-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <a href="{{ object.browse_file.url }}" class="btn btn-outline-primary"
-                                       target="_blank">
-                                        <span class="fas fa-download" aria-hidden="true"></span>
-                                    </a>
-                                </small>
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table style="vertical-align: middle"
+                           class="table table-bordered table-dark table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width: 1%"></th>
+                            <th style="width: 50%">
+                                File name
+                            </th>
+                            <th>
+                                Upload date
+                            </th>
+                            <th>
+                                Shared
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
 
-                                <small class="text-muted">
-                                    <a href="{% url 'users:delete' slug=object.slug %}" class="btn btn-outline-danger"
-                                       target="_blank">
-                                        <span class="fas fa-trash" aria-hidden="true"></span>
-                                        <span class=""></span>
-                                    </a>
-                                </small>
+                        </tr>
+                        </thead>
+                        {% for object in files %}
+                        {% if object.uploaded_by == request.user %}
+
+
+                        <tbody>
+                        <tr>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle"
+                                onclick="location.href='{{object.get_absolute_url}}'">
+                                <span class="fiv-cla fiv-icon-{{object.extension}}"></span>
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle"
+                                onclick="location.href='{{object.get_absolute_url}}'">
+                                {{object.title|truncatechars:50}}
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle"
+                                onclick="location.href='{{object.get_absolute_url}}'">
+                                {{object.uploaded_at}}
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle">
+                                <div class="btn-group btn-shared">
+                                    <button class="btn btn-outline-light btn-sm fas fa-user-friends"
+                                            style="border-radius: 40px"> {{ object.users_with_perms|length }} </button>
+
+                                    <ul class="dropdown-menu dropdown-shared">
+                                        {% for x in object.users_with_perms %}
+
+                                        <li class="list-group-item lgi-menu">
+                                            {{ x.name }} ({{ x.email }})
+                                        </li>
+
+                                        {% empty %}
+                                        <li class="list-group-item lgi-menu">
+                                            You have not shared this file with anyone yet
+                                        </li>
+                                        {% endfor %}
+
+                                    </ul>
+                                </div>
+                            </td>
+
+                            <td style="vertical-align: middle">
+                                <button class="btn btn-outline-primary btn-sm fas fa-download btn-list" type="button"
+                                        onclick="location.href='{{ object.browse_file.url }}'">
+                                </button>
+                            </td>
+
+                            <td style="vertical-align: middle">
+                                <button id="dlt-button"
+                                        class="btn btn-outline-danger btn-sm fas fa-trash btn-list" type="button"
+                                        onclick="window.location.href='{% url 'users:delete' pk=object.pk %}'">
+                                </button>
+                            </td>
+
+                            <td style="vertical-align: middle">
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-info fas fa-share" type="button"
+                                    <button class="btn btn-outline-info btn-sm fas fa-share btn-list" type="button"
                                             id="dropdownMenuClickable"
                                             data-bs-toggle="dropdown"
                                             data-bs-auto-close="outside"
@@ -48,24 +107,17 @@
 
                                         <ul class="dropdown-menu checkbox-menu allow-focus dd-menu"
                                             aria-labelledby="dropdownMenuClickable">
+                                            {% if object.users_to_share|length > 0 %}
 
+                                            {% for x in object.users_to_share %}
 
-                                            {% for user in users %}
-                                            {% get_obj_perms user for object as 'userfiles_perms' %}
-                                            {% if not "view_userfiles" in userfiles_perms %}
                                             <li class="list-group-item lgi-menu">
 
                                                 <input class="form-check-input me-1"
                                                        type="checkbox" id="email" name="email"
-                                                       value="{{user.email|truncatechars:50}}">
-                                                {{user.email|truncatechars:50}}
+                                                       value="{{x.email}}">{{x.email}}
                                             </li>
-                                            {% elif forloop.counter < 2 %}
-                                            <li class="list-group-item lgi-menu">You have already shared this file with
-                                                all
-                                                users
-                                            </li>
-                                            {% endif %}
+
                                             {% endfor %}
 
                                             <li style="display: none;">
@@ -79,19 +131,28 @@
                                                 </button>
                                             </li>
 
+                                            {% else %}
+                                            <li class="list-group-item lgi-menu">You have already shared this file with
+                                                all
+                                                users
+
+                                            </li>
+                                            {% endif %}
+
                                         </ul>
                                     </form>
                                 </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
-            {% endif %}
-            {% endfor %}
         </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
+</section>
+
 {% endblock %}

@@ -11,6 +11,8 @@
           rel="stylesheet">
     <link rel='stylesheet'
           href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/file-icon-vectors@1.0.0/dist/file-icon-classic.min.css"/>
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 
@@ -23,12 +25,13 @@
         <ul class="navbar-nav navbar-right">
             {% if user.is_authenticated %}
             {% if request.user.is_superuser %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:access' %}"> Admin: {{request.user.name}} </a>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:adminp' %}"> Admin: {{request.user.name}} </a>
             </li>
-            {% endif %}
+            {% else %}
             <li class="nav-item"><a class="nav-link" href="{% url 'users:file_upload' %}"> Upload File </a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'users:my_files_list' %}"> My Files </a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:all_files_list' %}"> All files </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'users:shared_with_me' %}"> Shared with me </a></li>
+            {% endif %}
             <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}"> Logout </a></li>
             {% else %}
             <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}"> Login </a></li>
@@ -55,6 +58,7 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+
 <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
 </body>
 </html>

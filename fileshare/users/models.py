@@ -1,3 +1,4 @@
+import os
 import uuid
 from django.conf import settings
 from django.db import models
@@ -7,6 +8,7 @@ from django.contrib.auth.models import (BaseUserManager,
 from fileshare.middleware import get_current_user
 from django.template.defaultfilters import slugify
 from django.urls import reverse
+from guardian.shortcuts import get_users_with_perms
 
 
 def user_directory_path(instance, filename):
@@ -88,7 +90,30 @@ class UserFiles(models.Model):
         return super(UserFiles, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('users:detail', kwargs={'slug': self.slug})
+        return reverse('users:detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title
+
+    def extension(self):
+        name, extension = os.path.splitext(self.browse_file.name)
+        return extension[1:]
+
+    def users_with_perms(self):
+        users_with_perms = get_users_with_perms(
+            self, only_with_perms_in=['view_userfiles']
+        )
+        return [i for i in users_with_perms if i != self.uploaded_by]
+
+    def admin_page(self):
+        users_with_perms = get_users_with_perms(
+            self, only_with_perms_in=['view_userfiles']
+        )
+        return [i for i in users_with_perms]
+
+    def users_to_share(self):
+        users_with_perms = get_users_with_perms(
+            self, only_with_perms_in=['view_userfiles'], with_superusers=True
+        )
+        users_to_share = [user for user in User.objects.all() if user not in users_with_perms]
+        return users_to_share

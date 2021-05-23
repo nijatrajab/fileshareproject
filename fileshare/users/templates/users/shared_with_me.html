@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load guardian_tags %}
+{% block content %}
+<section class="ftco-section">
+    <div class="container">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4">Shared with me</h1>
+            <b>{{ request.user.name }}</b>
+        </div>
+        {% if request.user.is_authenticated %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table style="vertical-align: middle"
+                           class="table table-bordered table-dark table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width: 1%"></th>
+                            <th style="width: 50%">
+                                File name
+                            </th>
+                            <th>
+                                Uploader
+                            </th>
+                            <th>
+                                Upload date
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                        {% for object in files %}
+                        {% if object.uploaded_by != request.user %}
+
+                        <tbody>
+                        <tr>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle">
+                                <span class="fiv-cla fiv-icon-{{object.extension}}"></span>
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle">
+                                {{object.title|truncatechars:50}}
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle">
+                                {{object.uploaded_by|truncatechars:50}}
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle">
+                                {{object.uploaded_at}}
+                            </td>
+
+                            <td style="vertical-align: middle">
+                                <button class="btn btn-outline-primary btn-sm fas fa-download btn-list" type="button"
+                                        onclick="location.href='{{ object.browse_file.url }}'">
+                                </button>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

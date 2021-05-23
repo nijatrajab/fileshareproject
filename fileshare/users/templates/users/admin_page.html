@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load guardian_tags %}
+{% load custom_tags %}
+{% block content %}
+<section class="ftco-section">
+    <div class="container">
+        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+            <h1 class="display-4">All files</h1>
+            <h5 style="font-weight: normal; padding-top: 10px">{{files|length}} files uploaded by {{users|length}} users</h5>
+        </div>
+        {% if request.user.is_authenticated %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table style="vertical-align: middle"
+                           class="admin-table table-bordered table-dark table-hover">
+                        <thead>
+                        <tr class="admin-files active">
+                            <th style="width: 1%"></th>
+
+                            <th style="width: 50%; text-indent: 20px">
+                                File name
+                            </th>
+
+                            <th style="text-indent: 5px; width: 18%">
+                                Upload date
+                            </th>
+
+                            <th style="text-indent: 5px; width: 9%">
+                                Size
+                            </th>
+
+                            <th style="text-align: center; width: 7%">
+                                Access
+                            </th>
+
+                            <th colspan="3" style="text-align: center; width: 16%">
+                                Actions
+                            </th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for object in files %}
+                        <tr class="admin-files parent" id="{{forloop.counter}}">
+
+                            <td class="fl-list"
+                                style="vertical-align: middle">
+                                <span class="fiv-cla fiv-icon-{{object.extension}}"></span>
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle; text-indent: 20px">
+                                {{object.title|truncatechars:50}}
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle; text-indent: 5px">
+                                {{object.uploaded_at}}
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle; text-indent: 5px">
+                                {{object.browse_file.size|sizify}}
+                            </td>
+
+                            <td class="fl-list"
+                                style="vertical-align: middle; text-align: center">
+                                    <button class="btn btn-outline-light btn-sm fas fa-user-friends admin-btn"
+                                            style="border-radius: 40px"></button>
+                            </td>
+
+                            <td style="vertical-align: middle; text-align: center">
+                                <button class="btn btn-outline-primary btn-sm fas fa-download btn-list"
+                                        type="button"
+                                        onclick="location.href='{{ object.browse_file.url }}'">
+                                </button>
+                            </td>
+
+                            <td style="vertical-align: middle; text-align: center">
+                                <button id="dlt-button"
+                                        class="btn btn-outline-danger btn-sm fas fa-trash btn-list" type="button"
+                                        onclick="window.location.href='{% url 'users:delete' pk=object.pk %}'">
+                                </button>
+                            </td>
+
+                            <td style="vertical-align: middle; text-align: center">
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-info btn-sm fas fa-share btn-list" type="button"
+                                            data-bs-toggle="dropdown"
+                                            data-bs-auto-close="outside"
+                                            data-toggle="dropdown"
+                                            aria-expanded="false">
+                                    </button>
+                                    <form method="POST"
+                                          action="{% url 'users:share' id=object.id %}">
+                                        {% csrf_token %}
+
+                                        <ul class="dropdown-menu checkbox-menu allow-focus dd-menu"
+                                            aria-labelledby="dropdownMenuClickable">
+                                            {% if object.users_to_share|length > 0 %}
+
+                                            {% for x in object.users_to_share %}
+
+                                            <li class="list-group-item lgi-menu">
+
+                                                <input class="form-check-input me-1"
+                                                       type="checkbox" id="email" name="email"
+                                                       value="{{x.email}}">{{x.email}}
+                                            </li>
+
+                                            {% endfor %}
+
+                                            <li style="display: none;">
+                                                <label for="permission"></label>
+                                                <input id="permission" name="permission" value="view_userfiles"/>view_userfiles
+                                            </li>
+
+                                            <li class="list-group-item lgi-menu share-btn">
+                                                <button class="btn btn-outline-light"
+                                                        aria-hidden="true">Share
+                                                </button>
+                                            </li>
+
+                                            {% else %}
+                                            <li class="list-group-item lgi-menu">
+                                                You have already shared this file
+                                                with all users
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </form>
+                                </div>
+
+                            </td>
+                        </tr>
+
+                        <tr class="admin-shared-head child-{{forloop.counter}}" style="display: none">
+
+                            <td colspan="5" style="text-indent: 25px">
+                                User name and email
+                            </td>
+
+                            <td colspan="1" style="text-align: center;">
+                                <i class="far fa-eye"></i>
+                            </td>
+
+                            <td colspan="1" style="text-align: center;">
+                                <i class="far fa-edit"></i>
+                            </td>
+
+                            <td colspan="1" style="text-align: center;">
+                                <i class="fas fa-eraser"></i>
+                            </td>
+
+                        </tr>
+                        {% for x in object.admin_page %}
+                        <tr class="admin-shared child-{{forloop.parentloop.counter}}" style="display: none">
+
+                            <td colspan="5" style="text-indent: 20px">
+                                {{ x.name }} ({{ x.email }})
+                            </td>
+
+                            <td colspan="1" style="text-align: center;">
+                                <i class="fas fa-check-circle" style="color: greenyellow;"></i>
+                            </td>
+
+                            {% if object.uploaded_by == x %}
+                            <td colspan="1" style="text-align: center;">
+                                <i class="fas fa-check-circle" style="color: greenyellow;"></i>
+                            </td>
+
+                            <td colspan="1" style="text-align: center;">
+                                <i class="fas fa-check-circle" style="color: greenyellow;"></i>
+                            </td>
+                            {% else %}
+
+                            <td colspan="1" style="text-align: center;">
+                                <i class="fas fa-times-circle" style="color: red;"></i>
+                            </td>
+
+                            <td colspan="1" style="text-align: center;">
+                                <i class="fas fa-times-circle" style="color: red;"></i>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                        {% if object.description|length > 0 %}
+                        <tr class="admin-shared-head child-{{forloop.counter}}" style="display: none">
+                            <td colspan="8" style="text-align: center">
+                                Description
+                            </td>
+                        </tr>
+                        <tr class="admin-shared-desc child-{{forloop.counter}}" style="display: none">
+                            <td colspan="8" style="text-align: center;">
+                                {{object.description}}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr class="admin-shared-desc child-{{forloop.counter}}" style="display: none">
+                            <td colspan="8" style="text-align: center; background-color: rgba(24, 24, 24, 0.9); font-weight: bold">
+                                File has not description
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

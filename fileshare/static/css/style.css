@@ -1,5 +1,187 @@
+table {
+    border-collapse: collapse;
+}
+
+th {
+    text-align: inherit;
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+table.admin-table{
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #efefef;
+}
+
+.table-dark tr.admin-files {
+    border-color: #454d55;
+    background-color: #171717;
+}
+
+.table-dark tr.admin-shared {
+    background-color: #3e1b1b;
+    border-left-width: 10px;
+    border-right-width: 10px;
+    border-color: #ffffff;
+}
+
+.table-dark tr.admin-shared-desc {
+    background-color: #3e1b1b;
+    border-left-width: 10px;
+    border-right-width: 10px;
+    border-bottom-width: 5px;
+    border-color: #ffffff;
+}
+
+.table-dark tr.admin-shared-head {
+    background-color: #1f1f1f;
+    border-top-width: 5px;
+    border-left-width: 10px;
+    border-right-width: 10px;
+    border-color: #ffffff;
+    font-weight: bold;
+}
+
+.admin-table.table-hover tbody tr.admin-shared:hover {
+    color: #fff;
+    background-color: rgba(3, 3, 3, 0.9);
+}
+
+.admin-table.table-hover tbody tr.admin-shared-desc:hover {
+    color: #fff;
+    background-color: rgba(3, 3, 3, 0.9);
+}
+
+.admin-table.table-hover tbody tr.admin-shared-head:hover {
+    color: #fff;
+    background-color: rgba(24, 24, 24, 0.9);
+}
+
+.admin-table.table-hover tbody tr.admin-files:hover {
+    color: #fff;
+    background-color: rgba(90, 27, 23, 0.9);
+}
+
+
+
+
+
+
+
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: middle;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table-dark.table-bordered td{
+    border: 1px solid #090909;
+}
+
+.table-dark.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-dark.table-hover tbody tr:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+.bg-primary {
+    background: #1089ff !important;
+}
+
+.ftco-section {
+    padding: 3em 0;
+}
+
+.ftco-no-pt {
+    padding-top: 0;
+}
+
+.ftco-no-pb {
+    padding-bottom: 0;
+}
+
+.table-wrap {
+    overflow: visible;
+}
+
+.table {
+    min-width: 1000px;
+    width: 100%;
+}
+
+.table thead th {
+    border: none;
+    padding: 9px 9px;
+    font-size: 14px;
+    color: #fff;
+    border-bottom: 4px solid #2b3035;
+}
+
+.table tbody tr {
+    margin-bottom: 7px;
+}
+
+.table tbody th, .table tbody td {
+    border: none;
+    padding: 9px 9px;
+    border-bottom: 3px solid #2b3035;
+    font-size: 14px;
+}
+
+
 body {
-  padding: 15px;
+    padding: 15px;
 }
 
 .checkbox-menu li label {
@@ -10,9 +192,10 @@ body {
     line-height: 1.42857143;
     color: #333;
     white-space: nowrap;
-    margin:0;
+    margin: 0;
     transition: background-color .4s ease;
 }
+
 .checkbox-menu li input {
     margin: 0px 5px;
     top: 2px;
@@ -21,7 +204,7 @@ body {
 
 .checkbox-menu li.active label {
     background-color: #cbcbff;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .checkbox-menu li label:hover,
@@ -34,27 +217,48 @@ body {
     background-color: #b8b8ff;
 }
 
-.dd-menu{
-    position: absolute;
+.form-check-input:checked {
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
+.dropdown-shared {
     top: 100%;
-    left: 0;
     z-index: 1000;
-    display: none;
     float: left;
     min-width: 14rem;
     padding: .5rem 0;
-    margin: .125rem 0 0;
+    margin: -94% 150% 0;
     font-size: 1rem;
     color: #d9534f;
     text-align: center;
     list-style: none;
     background-color: #212529;
-    -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    border: 2px solid rgba(217, 83, 79,.45);
+    border: 2px solid rgba(217, 83, 79, .45);
     border-radius: .25rem;
 }
-.lgi-menu{
+
+.dd-menu {
+    position: fixed;
+    top: 100%;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 14rem;
+    padding: .5rem 0;
+    margin: -105% 185% 0;
+    font-size: 1rem;
+    color: #d9534f;
+    text-align: center;
+    list-style: none;
+    background-color: #212529;
+    background-clip: padding-box;
+    border: 2px solid rgba(217, 83, 79, .45);
+    border-radius: .25rem;
+}
+
+.lgi-menu {
     color: #d9534f;
     background-color: #212529;
     font-weight: 500;
@@ -66,26 +270,27 @@ body {
     right: 26.3%;
     width: 500px;
     height: 200px;
-    justify-content: center !important;
-    align-items: center !important;
-    background: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: start;
+    background: rgba(0, 0, 0, 0.9);
     border: 5px solid rgba(217, 83, 79, 0.3);
     border-radius: 20px;
-
     background-clip: padding-box;
-
     padding: 10px;
     margin: 20px;
-
     display: none;
 }
-
-.two-buttons {
-}
-
-
 
 .modal-text {
     color: white;
     display: block;
 }
+
+.fiv-cla, .fiv-viv, .fiv-sqo {
+    font-size: 1.5em;
+}
+
+.btn-list {
+    transform: scale(1);
+}
+

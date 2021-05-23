@@ -1,13 +1,10 @@
-from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect
 from django.views.generic import list, detail, edit, base
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin, LoginRequiredMixin
 from guardian.shortcuts import assign_perm, remove_perm
-from guardian.models import UserObjectPermission
-from guardian.core import ObjectPermissionChecker
 from django.contrib.auth.decorators import login_required
-
+from django.http import HttpRequest
 
 from .models import User, UserFiles
 from .forms import UserCreationForm
@@ -32,12 +29,12 @@ class HomeView(LoginRequiredMixin, base.View):
             return super(HomeView, self).dispatch(request, *args, **kwargs)
 
 
-class AllFilesList(PermissionListMixin, list.ListView):
+class SharedWithMe(PermissionListMixin, list.ListView):
     model = UserFiles
     login_url = ''
     permission_required = ['users.view_userfiles', ]
 
-    template_name = 'users/all_files_list.html'
+    template_name = 'users/shared_with_me.html'
     context_object_name = 'files'
     raise_exception = False
     permission_denied_message = 'You have not permission to see this'
@@ -85,41 +82,35 @@ class FileUploadView(PermissionRequiredMixin, edit.CreateView):
 
 class UserFilesDeleteView(PermissionRequiredMixin, edit.DeleteView):
     model = UserFiles
-    success_url = reverse_lazy('users:all_files_list')
+    success_url = reverse_lazy('users:shared_with_me')
     permission_required = ['view_userfiles', 'delete_userfiles']
     template_name = 'users/file_delete_confirm.html'
 
 
-class Access(PermissionRequiredMixin, list.ListView):
-    model = UserObjectPermission
+class AdminPage(PermissionListMixin, list.ListView):
+    model = UserFiles
+    users = User.objects.all()
     login_url = ''
     permission_required = ['is_staff', ]
 
-    template_name = 'users/access_user.html'
-    context_object_name = 'access'
+    template_name = 'users/admin_page.html'
+    context_object_name = 'files'
+    extra_context = {'users': users}
     raise_exception = False
     permission_denied_message = 'You have not permission to see this'
     redirect_field_name = 'next'
 
 
-# @login_required()
-# def myfiles(request):
-#     user = request.user
-#     files = UserFiles.objects.filter(uploaded_by=user).all()
-#     users = User.objects.all()
-#     return render(request, 'users/user_file_list.html', {'files': files, 'users': users})
-
-
 @login_required()
 def share_file(request, id):
-
     emails = request.POST.getlist('email')
     usobjs = User.objects.filter(email__in=emails)
     obj = UserFiles.objects.get(id=id)
     permtype = request.POST.get('permission')
 
     assign_perm(permtype, usobjs, obj)
-    return redirect(reverse('users:detail', kwargs={'slug': obj.slug}))
+    return redirect(reverse('users:my_files_list'))
+
 
 
 @login_required()
@@ -133,4 +124,4 @@ def revoke_access(request, id):
     usobj = User.objects.get(email=email)
     permtype = request.POST.get('permission')
     remove_perm(permtype, usobj, obj)
-    return redirect(reverse('users:detail', kwargs={'slug': obj.slug}))
+    return redirect(reverse('users:detail', kwargs={'pk': obj.pk}))

@@ -5,7 +5,7 @@
 
 
 <div>
-    <div class="container-fluid" style="max-width:800px">
+    <div class="container-fluid" style="max-width:1200px">
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
             <h1 class="display-4">{{object.title}}</h1>
             <div class="align-items-center">
@@ -15,12 +15,15 @@
                         <li class="list-group-item">File uploader</li>
                         <li class="list-group-item">File uploaded at</li>
                         <li class="list-group-item">File size</li>
+                        <li class="list-group-item">File type</li>
                     </ul>
                     <div class="list-group">
                         <a class="list-group-item list-group-item-action">{{object.title}}</a>
                         <a class="list-group-item list-group-item-action">{{object.uploaded_by}}</a>
                         <a class="list-group-item list-group-item-action">{{object.uploaded_at}}</a>
                         <a class="list-group-item list-group-item-action">{{object.browse_file.size|sizify}}</a>
+                        <a class="list-group-item list-group-item-action"><span
+                                class="fiv-cla fiv-icon-{{object.extension}}"></span></a>
                     </div>
                     <div class="list-group">
                         <small class="text-muted">
@@ -48,22 +51,17 @@
 
                                 <ul class="dropdown-menu checkbox-menu allow-focus dd-menu"
                                     aria-labelledby="dropdownMenuClickable">
+                                    {% if object.users_to_share|length > 0 %}
 
+                                    {% for x in object.users_to_share %}
 
-                                    {% for user in users %}
-                                    {% get_obj_perms user for object as 'userfiles_perms' %}
-                                    {% if not "view_userfiles" in userfiles_perms %}
                                     <li class="list-group-item lgi-menu">
 
                                         <input class="form-check-input me-1"
                                                type="checkbox" id="email" name="email"
-                                               value="{{user.email|truncatechars:50}}"> {{user.email|truncatechars:50}}
+                                               value="{{x}}">{{x}}
                                     </li>
-                                    {% elif forloop.counter < 2 %}
-                                    <li class="list-group-item lgi-menu">You have already shared this file with all
-                                        users
-                                    </li>
-                                    {% endif %}
+
                                     {% endfor %}
 
                                     <li style="display: none;">
@@ -77,6 +75,14 @@
                                         </button>
                                     </li>
 
+                                    {% else %}
+                                    <li class="list-group-item lgi-menu">You have already shared this file with
+                                        all
+                                        users
+
+                                    </li>
+                                    {% endif %}
+
                                 </ul>
                             </form>
                         </div>
@@ -87,14 +93,16 @@
         </div>
 
         <p/>
-        <div class="alert alert-warning align-items-center" role="alert">
-            <p class="text-center">Description</p>
+        <div class="alert alert-warning align-items-center" role="alert" style="text-align: center">
+            Description
         </div>
 
-        <p class="text-center">{{object.description}}</p>
+        <p style="text-align: center">{{object.description}}</p>
 
         <div>
+
             <table class="table table-dark table-hover">
+                {% if object.users_with_perms|length > 0 %}
                 <thead>
                 <tr>
                     <th scope="col">User Name</th>
@@ -103,17 +111,13 @@
                 </tr>
                 </thead>
 
-                {% for user in users %}
-                {% if not user.is_superuser and not object.uploaded_by == user %}
-                {% get_obj_perms user for files as 'userfiles_perms' %}
-                {% if "view_userfiles" in userfiles_perms %}
-
+                {% for x in object.users_with_perms %}
                 <form method="POST"
                       action="{% url 'users:revoke' id=object.id %}">
                     {% csrf_token %}
                     <tbody>
                     <tr>
-                        <td>{{user.name}}
+                        <td>{{x.name}}
                             <div style="display: none;">
                                 <label for="permission"></label>
                                 <select id="permission" name="permission">
@@ -121,11 +125,11 @@
                                 </select>
                             </div>
                         </td>
-                        <td>{{user.email}}
+                        <td>{{x.email}}
                             <div style="display: none;">
                                 <label for="email"></label>
                                 <select id="email" name="email">
-                                    <option>{{user.email|truncatechars:50}}</option>
+                                    <option>{{x.email}}</option>
                                 </select>
                             </div>
                         </td>
@@ -133,25 +137,37 @@
                             <button class="btn btn-outline-danger fas fa-user-minus"
                                     aria-hidden="true"></button>
                         </td>
+
+
                     </tr>
                     </tbody>
                 </form>
-
-                {% endif %}
-                {% endif %}
                 {% endfor %}
+                {% else %}
+                <thead>
+                <tr>
+                    <th style="text-align: center">You have not shared this file with anyone yet</th>
+                </tr>
+                </thead>
+                {% endif %}
             </table>
+
         </div>
     </div>
 
     <div class="dlt-modal">
-        <h5 class="modal-text">Are you sure you want to delete {{files.title}} ?</h5>
-        <div class="two-buttons">
-            <form method="POST" action="{% url 'users:delete' slug=object.slug %}">
+        <div>
+            <h5 class="modal-text">Are you sure you want to delete {{files.title}} ?</h5>
+        </div>
+        <div>
+            <form method="POST" action="{% url 'users:delete' pk=object.pk %}">
                 {% csrf_token %}
-                <button type="submit" value="Confirm" class="btn btn-outline-danger">Confirm</button>
+                <button type="submit" value="Confirm" class="btn btn-outline-danger" style="width: 97px;">Confirm
+                </button>
             </form>
-            <button class="btn btn-outline-light btn-large dlt-close">Cancel</button>
+        </div>
+        <div>
+            <button class="btn btn-outline-light btn-large dlt-close" style="width: 97px">Cancel</button>
         </div>
 
     </div>
