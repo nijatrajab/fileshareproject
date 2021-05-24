@@ -43,7 +43,7 @@
 
                         <tbody>
                         {% for object in files %}
-                        <tr class="admin-files parent" id="{{forloop.counter}}">
+                        <tr class="admin-files parent" id="{{object.pk}}">
 
                             <td class="fl-list"
                                 style="vertical-align: middle">
@@ -136,7 +136,7 @@
                             </td>
                         </tr>
 
-                        <tr class="admin-shared-head child-{{forloop.counter}}" style="display: none">
+                        <tr class="admin-shared-head child-{{object.pk}}" style="display: none">
 
                             <td colspan="5" style="text-indent: 25px">
                                 User name and email
@@ -156,7 +156,7 @@
 
                         </tr>
                         {% for x in object.admin_page %}
-                        <tr class="admin-shared child-{{forloop.parentloop.counter}}" style="display: none">
+                        <tr class="admin-shared child-{{object.pk}}" style="display: none">
 
                             <td colspan="5" style="text-indent: 20px">
                                 {{ x.name }} ({{ x.email }})
@@ -187,18 +187,18 @@
                         </tr>
                         {% endfor %}
                         {% if object.description|length > 0 %}
-                        <tr class="admin-shared-head child-{{forloop.counter}}" style="display: none">
+                        <tr class="admin-shared-head child-{{object.pk}}" style="display: none">
                             <td colspan="8" style="text-align: center">
                                 Description
                             </td>
                         </tr>
-                        <tr class="admin-shared-desc child-{{forloop.counter}}" style="display: none">
+                        <tr class="admin-shared-desc child-{{object.pk}}" style="display: none">
                             <td colspan="8" style="text-align: center;">
                                 {{object.description}}
                             </td>
                         </tr>
                         {% else %}
-                        <tr class="admin-shared-desc child-{{forloop.counter}}" style="display: none">
+                        <tr class="admin-shared-desc child-{{object.pk}}" style="display: none">
                             <td colspan="8" style="text-align: center; background-color: rgba(24, 24, 24, 0.9); font-weight: bold">
                                 File has not description
                             </td>
