@@ -10,6 +10,7 @@
         {% if request.user.is_authenticated %}
         <div class="row">
             <div class="col-md-12">
+                {% if files|length > 0 %}
                 <div class="table-wrap">
                     <table style="vertical-align: middle"
                            class="table table-bordered table-dark table-hover">
@@ -149,6 +150,9 @@
                         {% endfor %}
                     </table>
                 </div>
+                {% else %}
+                <h3 class="display-6" style="text-align: center">You don't have file</h3>
+                {% endif %}
             </div>
         </div>
         {% endif %}
