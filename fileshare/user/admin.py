@@ -6,7 +6,8 @@ from django.contrib import messages
 
 from guardian.admin import GuardedModelAdmin
 
-from .models import User, UserFiles
+from .models import User
+from fileup.models import UserFile
 from .forms import UserCreationForm, UserChangeForm
 
 
@@ -53,5 +54,5 @@ class UserAdmin(BaseUserAdmin):
 
 
 fileshare_site.register(User, TestAdminPermissions)
-fileshare_site.register(UserFiles, TestAdminPermissions)
+fileshare_site.register(UserFile, TestAdminPermissions)
 fileshare_site.register(Group, TestAdminPermissions)

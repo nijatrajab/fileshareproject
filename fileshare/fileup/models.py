@@ -2,13 +2,12 @@ import os
 import uuid
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import (BaseUserManager,
-                                        AbstractBaseUser,
-                                        PermissionsMixin)
-from fileshare.middleware import get_current_user
 from django.template.defaultfilters import slugify
 from django.urls import reverse
+
 from guardian.shortcuts import get_users_with_perms
+from fileshare.middleware import get_current_user
+from user.models import User
 
 
 def user_directory_path(instance, filename):
@@ -17,49 +16,7 @@ def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.uploaded_by.id, filename)
 
 
-class UserManager(BaseUserManager):
-
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('Email yaz!')
-
-        user = self.model(
-            email=self.normalize_email(email),
-            **extra_fields
-        )
-
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password):
-        user = self.create_user(email, password)
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        return user
-
-    def __str__(self):
-        return self.email
-
-
-class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=50,
-                              unique=True,
-                              verbose_name='email address')
-    name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    objects = UserManager()
-
-    USERNAME_FIELD = 'email'
-
-    def __str__(self):
-        return self.email
-
-
-class UserFiles(models.Model):
+class UserFile(models.Model):
     title = models.CharField(max_length=50)
     browse_file = models.FileField(upload_to=user_directory_path)
     description = models.CharField(max_length=500, null=True, blank=True)
@@ -67,7 +24,7 @@ class UserFiles(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                     on_delete=models.CASCADE,
-                                    related_name='userfiless',
+                                    related_name='userfile',
                                     blank=True,
                                     null=True,
                                     default=None)
@@ -75,7 +32,7 @@ class UserFiles(models.Model):
     class Meta:
         default_permissions = ('add', 'change', 'delete')
         permissions = (
-            ('view_userfiles', 'Can view userfiles'),
+            ('view_userfile', 'Can view userfile'),
         )
         get_latest_by = 'uploaded_at'
 
@@ -87,10 +44,10 @@ class UserFiles(models.Model):
             self.uploaded_by = user
         if not self.slug:
             self.slug = slugify(self.title)
-        return super(UserFiles, self).save(*args, **kwargs)
+        return super(UserFile, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('users:detail', kwargs={'pk': self.pk})
+        return reverse('fileup:detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.title
@@ -101,19 +58,19 @@ class UserFiles(models.Model):
 
     def users_with_perms(self):
         users_with_perms = get_users_with_perms(
-            self, only_with_perms_in=['view_userfiles']
+            self, only_with_perms_in=['view_userfile']
         )
         return [i for i in users_with_perms if i != self.uploaded_by]
 
-    def admin_page(self):
-        users_with_perms = get_users_with_perms(
-            self, only_with_perms_in=['view_userfiles']
-        )
-        return [i for i in users_with_perms]
-
     def users_to_share(self):
         users_with_perms = get_users_with_perms(
-            self, only_with_perms_in=['view_userfiles'], with_superusers=True
+            self, only_with_perms_in=['view_userfile'], with_superusers=True
         )
         users_to_share = [user for user in User.objects.all() if user not in users_with_perms]
         return users_to_share
+
+    def admin_page(self):
+        users_with_perms = get_users_with_perms(
+            self, only_with_perms_in=['view_userfile']
+        )
+        return [i for i in users_with_perms]

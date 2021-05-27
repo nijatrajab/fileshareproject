@@ -88,7 +88,7 @@
                             <td style="vertical-align: middle">
                                 <button id="dlt-button"
                                         class="btn btn-outline-danger btn-sm fas fa-trash btn-list" type="button"
-                                        onclick="window.location.href='{% url 'users:delete' pk=object.pk %}'">
+                                        onclick="window.location.href='{% url 'fileup:delete' pk=object.pk %}'">
                                 </button>
                             </td>
 
@@ -102,7 +102,7 @@
                                             aria-expanded="false">
                                     </button>
                                     <form method="POST"
-                                          action="{% url 'users:share' id=object.id %}">
+                                          action="{% url 'fileup:share' id=object.id %}">
                                         {% csrf_token %}
 
                                         <ul class="dropdown-menu checkbox-menu allow-focus dd-menu"
@@ -122,7 +122,7 @@
 
                                             <li style="display: none;">
                                                 <label for="permission"></label>
-                                                <input id="permission" name="permission" value="view_userfiles"/>view_userfiles
+                                                <input id="permission" name="permission" value="view_userfile"/>view_userfile
                                             </li>
 
                                             <li class="list-group-item lgi-menu share-btn">

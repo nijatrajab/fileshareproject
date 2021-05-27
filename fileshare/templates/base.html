@@ -25,17 +25,17 @@
         <ul class="navbar-nav navbar-right">
             {% if user.is_authenticated %}
             {% if request.user.is_superuser %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:adminp' %}"> Admin: {{request.user.name}} </a>
+            <li class="nav-item"><a class="nav-link" href="{% url 'fileup:adminpage' %}"> Admin: {{request.user.name}} </a>
             </li>
             {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:file_upload' %}"> Upload File </a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:my_files_list' %}"> My Files </a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:shared_with_me' %}"> Shared with me </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'fileup:file_upload' %}"> Upload File </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'fileup:my_files_list' %}"> My Files </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'fileup:shared_with_me' %}"> Shared with me </a></li>
             {% endif %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}"> Logout </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'user:logout' %}"> Logout </a></li>
             {% else %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}"> Login </a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'users:signup' %}"> Sign up </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'user:login' %}"> Login </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'user:signup' %}"> Sign up </a></li>
             {% endif %}
         </ul>
     </div>

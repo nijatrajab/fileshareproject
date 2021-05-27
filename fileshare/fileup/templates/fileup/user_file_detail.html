@@ -46,7 +46,7 @@
                                     aria-expanded="false">
                             </button>
                             <form method="POST"
-                                  action="{% url 'users:share' id=object.id %}">
+                                  action="{% url 'fileup:share' id=object.id %}">
                                 {% csrf_token %}
 
                                 <ul class="dropdown-menu checkbox-menu allow-focus dd-menu"
@@ -66,7 +66,7 @@
 
                                     <li style="display: none;">
                                         <label for="permission"></label>
-                                        <input id="permission" name="permission" value="view_userfiles"/>view_userfiles
+                                        <input id="permission" name="permission" value="view_userfile"/>view_userfile
                                     </li>
 
                                     <li class="list-group-item lgi-menu share-btn">
@@ -113,7 +113,7 @@
 
                 {% for x in object.users_with_perms %}
                 <form method="POST"
-                      action="{% url 'users:revoke' id=object.id %}">
+                      action="{% url 'fileup:revoke' id=object.id %}">
                     {% csrf_token %}
                     <tbody>
                     <tr>
@@ -121,7 +121,7 @@
                             <div style="display: none;">
                                 <label for="permission"></label>
                                 <select id="permission" name="permission">
-                                    <option>view_userfiles</option>
+                                    <option>view_userfile</option>
                                 </select>
                             </div>
                         </td>
@@ -160,7 +160,7 @@
             <h5 class="modal-text">Are you sure you want to delete {{files.title}} ?</h5>
         </div>
         <div>
-            <form method="POST" action="{% url 'users:delete' pk=object.pk %}">
+            <form method="POST" action="{% url 'fileup:delete' pk=object.pk %}">
                 {% csrf_token %}
                 <button type="submit" value="Confirm" class="btn btn-outline-danger" style="width: 97px;">Confirm
                 </button>
