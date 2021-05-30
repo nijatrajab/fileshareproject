@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Welcome to File Share App</h1>
-    {% if request.user.is_authenticated %}
-        <div class="col-md-4">
-            <h3> User: {{ request.user.name }}</h3>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                    <h1 class="display-4">Welcome to File Share App</h1>
+                </div>
+
+                <div class="display-6 text-center">
+                    {% if request.user.is_authenticated %}
+                    <h3>User: {{ request.user.name }}</h3>
+                    {% else %}
+                    <h3>You must login to see your files and shared with you ones</h3>
+                    {% endif %}
+                </div>
+
+            </div>
         </div>
-    {% else %}
-        <div class="col-md-4">
-            <h3> You must login to see your files and shared with you ones</h3>
-        </div>
-    {% endif %}
+    </div>
+</section>
+
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect
-from django.views.generic import list, detail, edit
+from django.views.generic import list, detail, edit, View, TemplateView
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm, remove_perm
 from django.contrib.auth.decorators import login_required
@@ -64,7 +64,9 @@ class FileDeleteView(PermissionRequiredMixin, edit.DeleteView):
     model = UserFile
     success_url = reverse_lazy('fileup:shared_with_me')
     permission_required = ['view_userfile', 'delete_userfile']
-    template_name = 'fileup/file_delete_confirm.html'
+
+    def get(self, *args, **kwargs):
+        return self.post(*args, **kwargs)
 
 
 class AdminPage(PermissionListMixin, list.ListView):

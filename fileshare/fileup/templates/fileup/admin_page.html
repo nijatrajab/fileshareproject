@@ -2,11 +2,13 @@
 {% load guardian_tags %}
 {% load custom_tags %}
 {% block content %}
+{% include "fileup/conf_delete_modal.html" %}
 <section class="ftco-section">
     <div class="container">
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
             <h1 class="display-4">All files</h1>
-            <h5 style="font-weight: normal; padding-top: 10px">{{files|length}} files uploaded by {{users|length}} users</h5>
+            <h5 style="font-weight: normal; padding-top: 10px">{{files|length}} files uploaded by {{users|length}}
+                users</h5>
         </div>
         {% if request.user.is_authenticated %}
         <div class="row">
@@ -67,8 +69,8 @@
 
                             <td class="fl-list"
                                 style="vertical-align: middle; text-align: center">
-                                    <button class="btn btn-outline-light btn-sm fas fa-user-friends admin-btn"
-                                            style="border-radius: 40px"></button>
+                                <button class="btn btn-outline-light btn-sm fas fa-user-friends admin-btn"
+                                        style="border-radius: 40px"></button>
                             </td>
 
                             <td style="vertical-align: middle; text-align: center">
@@ -79,10 +81,11 @@
                             </td>
 
                             <td style="vertical-align: middle; text-align: center">
-                                <button id="dlt-button"
-                                        class="btn btn-outline-danger btn-sm fas fa-trash btn-list" type="button"
-                                        onclick="window.location.href='{% url 'fileup:delete' pk=object.pk %}'">
-                                </button>
+                                <a type="button"
+                                   href="{% url 'fileup:delete' pk=object.id %}"
+                                   class="confirm-delete btn btn-outline-danger btn-sm fas fa-trash btn-list"
+                                   title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"
+                                   id="deleteButton{{object.id}}"></a>
                             </td>
 
                             <td style="vertical-align: middle; text-align: center">
@@ -199,7 +202,8 @@
                         </tr>
                         {% else %}
                         <tr class="admin-shared-desc child-{{object.pk}}" style="display: none">
-                            <td colspan="8" style="text-align: center; background-color: rgba(24, 24, 24, 0.9); font-weight: bold">
+                            <td colspan="8"
+                                style="text-align: center; background-color: rgba(24, 24, 24, 0.9); font-weight: bold">
                                 File has not description
                             </td>
                         </tr>

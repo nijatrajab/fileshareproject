@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load guardian_tags %}
 {% block content %}
+{% include "fileup/conf_delete_modal.html" %}
 <section class="ftco-section">
     <div class="container">
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -61,7 +62,8 @@
                                 style="vertical-align: middle">
                                 <div class="btn-group btn-shared">
                                     <button class="btn btn-outline-light btn-sm fas fa-user-friends"
-                                            style="border-radius: 40px"> {{ object.users_with_perms|length }} </button>
+                                            style="border-radius: 40px"> {{ object.users_with_perms|length }}
+                                    </button>
 
                                     <ul class="dropdown-menu dropdown-shared">
                                         {% for x in object.users_with_perms %}
@@ -87,10 +89,11 @@
                             </td>
 
                             <td style="vertical-align: middle">
-                                <button id="dlt-button"
-                                        class="btn btn-outline-danger btn-sm fas fa-trash btn-list" type="button"
-                                        onclick="window.location.href='{% url 'fileup:delete' pk=object.pk %}'">
-                                </button>
+                                <a type="button"
+                                   href="{% url 'fileup:delete' pk=object.id %}"
+                                   class="confirm-delete btn btn-outline-danger btn-sm fas fa-trash btn-list"
+                                   title="Delete" data-toggle="modal" data-target="#confirmDeleteModal"
+                                   id="deleteButton{{object.id}}"></a>
                             </td>
 
                             <td style="vertical-align: middle">

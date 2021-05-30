@@ -16,13 +16,15 @@ $(function() {
 });
 
 
-document.getElementById('dlt-button').addEventListener('click', function () {
-    document.querySelector('.dlt-modal').style.display = 'flex';
+$(document).on('click', '.confirm-delete', function () {
+  $("#confirmDeleteModal").attr('caller-id', $(this).attr('id'));
+  console.log()
 });
 
-document.querySelector('.dlt-close').addEventListener('click', function () {
-    document.querySelector('.dlt-modal').style.display = 'none'
-})
+$(document).on('click', '#confirmDeleteButtonModal', function () {
+  var caller = $("#confirmDeleteButtonModal").closest(".modal").attr('caller-id');
+  window.location = $("#".concat(caller)).attr('href');
+});
 
 
 (function ($) {
