@@ -1,0 +1,25 @@
+<div id="file_delete">
+    <div class="modal fade" tabindex="-1" role="dialog" id="deletemodal">
+        <div class="modal-dialog mt-5" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h3 class="modal-title">Delete File</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="delete-text">Are you sure you want to delete file with title
+                        <strong>{{ object.title }}</strong>?</p>
+                </div>
+                <form method="POST" action="{% url 'fileup:delete' object.pk %}">
+                    {% csrf_token %}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="delete" id="delete-button" class="btn btn-outline-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

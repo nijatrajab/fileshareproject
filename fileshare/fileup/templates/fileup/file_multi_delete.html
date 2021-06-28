@@ -1,0 +1,25 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="multi-delete">
+    <div class="modal-dialog mt-5" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Selected File</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="multi-delete-text"></p>
+            </div>
+
+            <form method="POST" action="{% url 'fileup:delete-multi' %}">
+                {% csrf_token %}
+                <div class="modal-footer">
+                    <input name="file_id" type="hidden" value="pass_checkedvalue" id="hidden_checkedinput">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

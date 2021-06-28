@@ -1,0 +1,44 @@
+{% load widget_tweaks %}
+<div id="file_update">
+    <div class="modal fade" tabindex="-1" role="dialog" id="updatemodal" aria-hidden="true">
+        <div class="modal-dialog mt-5" role="document">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'fileup:update' object.pk %}" enctype=multipart/form-data id="updateaction">
+                    {% csrf_token %}
+
+                    <div class="modal-header">
+                        <h3 class="modal-title">File Update</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+
+                        {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% render_field field class="form-control" placeholder=field.label %}
+                            <div class="{% if field.errors %} invalid{% endif %}">
+                                {% for error in field.errors %}
+                                <p class="help-block">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-dark">Update</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

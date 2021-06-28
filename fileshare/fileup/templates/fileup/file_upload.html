@@ -1,27 +1,46 @@
-{% extends 'base.html' %}
-{% load bootstrap5 %}
+{% load widget_tweaks %}
 
-{% block content %}
-
-<section class="ftco-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-
-                <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-                    <h1 class="display-4">Upload your file</h1>
-                </div>
-
-                <form method="post" enctype="multipart/form-data">
+<div id="file_upload">
+    <div class="modal fade" tabindex="-1" role="dialog" id="uploadmodal" aria-hidden="true">
+        <div class="modal-dialog mt-5" role="document">
+            <div class="modal-content">
+                <form method="post" action="{% url 'fileup:upload' %}" enctype=multipart/form-data>
                     {% csrf_token %}
-                    {% bootstrap_form form %}
-                    <input type="submit" class="btn btn-outline-primary" value="Upload">
-                    <input type="button" onclick="window.location.href='{% url 'fileup:my_files_list' %}'" class="btn btn-outline-dark"
-                           value="Back">
+
+                    <div class="modal-header">
+                        <h3 class="modal-title">File Upload</h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+
+                        {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% render_field field class="form-control" placeholder=field.label %}
+                            <div class="{% if field.errors %} invalid{% endif %}">
+                                {% for error in field.errors %}
+                                <p class="help-block">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-outline-dark">Upload</button>
+                    </div>
+
                 </form>
+
             </div>
         </div>
     </div>
-</section>
-
-{% endblock %}
+</div>

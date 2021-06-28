@@ -24,7 +24,6 @@ def thread_local_middleware(get_response):
     # One-time configuration and initialization.
 
     def middleware(request):
-
         # Code to be executed for each request before
         # the view (and later middleware) are called.
         _thread_locals.request = request

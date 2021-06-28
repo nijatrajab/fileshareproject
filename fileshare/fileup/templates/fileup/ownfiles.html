@@ -1,0 +1,315 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+
+{% include "fileup/file_multi_delete.html" %}
+{% include "fileup/file_detail.html" %}
+{% include "fileup/file_upload.html" %}
+
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4">My files</h1>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3 text-center">
+                    <button id="upload-file" class="mf-modal btn btn-outline-dark" type="button" name="button"
+                            url="{% url 'fileup:upload' %}">
+                        <div class="faa-parent animated-hover">
+                            <i class="fas fa-upload faa-rising faa-fast"></i> Upload file
+                        </div>
+                    </button>
+                    <button class="multi-delete-button btn btn-outline-danger"
+                            type="button" id="multi-conf"
+                            data-bs-toggle="modal"
+                            data-bs-target="#multi-delete"
+                            data-form-url="{% url 'fileup:delete-multi' %}"
+                            disabled>
+                        <div class="faa-parent animated-hover">
+                            <i class="fas fa-trash faa-ring faa-slow"></i> Delete
+                        </div>
+                    </button>
+                    <button class="btn btn-outline-primary"
+                            type="button" id="collapse-init"
+                            {% if files|length == 0 %}
+                            disabled
+                            {% endif %}>
+                        <div class="faa-parent animated-hover">
+                            <i class="fas fa-angle-double-down faa-bounce faa-reverse faa-fast"></i> Expand
+                        </div>
+                    </button>
+
+                </div>
+                <div class="panel-group" id="accordion">
+                    <div class="col-12 mb-3">
+                        {% if request.user.is_authenticated %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% if files|length > 0 %}
+                                <div class="table-wrap">
+                                    <table style="vertical-align: middle; border-collapse:collapse;"
+                                           class="table table-condensed table-bordered table-dark table-hover">
+                                        <thead>
+                                        <tr class="ownfiles">
+                                            <th style="width: 1%"><input type="checkbox" class="file-all-check"></th>
+                                            <th style="width: 1%"><i class="far fa-file"></i></th>
+                                            <th style="width: 50%">
+                                                File name
+                                            </th>
+                                            <th>
+                                                Upload date
+                                            </th>
+                                            <th style="width: 1%; text-align: center">
+                                                Shared
+                                            </th>
+                                            <th colspan="4" style="width: 1%; text-align: center">Actions</th>
+
+                                        </tr>
+                                        </thead>
+
+                                        {% for object in files %}
+
+                                        <tbody>
+
+                                        <tr class="ownfiles">
+                                            <td class="fl-list"
+                                                style="vertical-align: middle;">
+                                                <input type="checkbox"
+                                                       value="{{object.pk}}" class="file-check">
+                                            </td>
+
+                                            <td class="md-modal fl-list" id="md-{{object.pk}}"
+                                                url="{% url 'fileup:detail' object.pk %}"
+                                                style="vertical-align: middle; cursor: pointer;">
+                                                <span class="fiv-cla fiv-icon-{{object.extension}}"></span>
+                                            </td>
+
+                                            <td class="md-modal fl-list" id="md-{{object.pk}}"
+                                                url="{% url 'fileup:detail' object.pk %}"
+                                                style="vertical-align: middle; cursor: pointer;">
+                                                {{object.title|truncatechars:50}}
+                                            </td>
+
+                                            <td class="md-modal fl-list" id="md-{{object.pk}}"
+                                                url="{% url 'fileup:detail' object.pk %}"
+                                                style="vertical-align: middle; cursor: pointer;">
+                                                {{object.uploaded_at|naturaltime}}
+                                            </td>
+
+                                            <td class="fl-list" style="vertical-align: middle">
+                                                <button class="panel-title accordion-toggle btn btn-outline-light btn-sm fas fa-user-friends"
+                                                        style="border-radius: 40px"
+                                                        data-bs-toggle="collapse" type="button"
+                                                        data-bs-target="#demo{{object.id}}"
+                                                        aria-expanded="false" aria-controls="demo{{object.id}}">
+                                                    {{ object.users_with_perms|length }}
+                                                </button>
+                                            </td>
+
+                                            <td style="vertical-align: middle; text-align: center">
+                                                <button type="button" id="mu-{{object.pk}}"
+                                                        class="mu-modal btn btn-outline-light btn-sm fas fa-pen-fancy"
+                                                        url="{% url 'fileup:update' object.pk %}">
+                                                </button>
+                                            </td>
+                                            {% include "fileup/file_update.html" %}
+
+                                            <td style="vertical-align: middle; text-align: center">
+                                                <button class="btn btn-outline-primary btn-sm fas fa-download btn-list"
+                                                        type="button"
+                                                        onclick="location.href='{{ object.browse_file.url }}'">
+                                                </button>
+                                            </td>
+
+                                            {% include "fileup/file_delete.html" %}
+                                            <td style="vertical-align: middle; text-align: center">
+                                                <button type="button" id="mdel-{{object.pk}}"
+                                                        class="mdel-modal btn btn-outline-danger btn-sm fas fa-trash btn-list"
+                                                        url="{% url 'fileup:delete' object.pk %}">
+                                                </button>
+                                            </td>
+
+
+                                            <td style="vertical-align: middle; text-align: center">
+                                                <div class="btn-group dd-multiselect">
+                                                    <button class="btn btn-outline-info btn-sm fas fa-share btn-list"
+                                                            type="button"
+                                                            id="dropdownMenu{{object.pk}}"
+                                                            data-bs-toggle="dropdown"
+                                                            aria-haspopup="true"
+                                                            aria-expanded="true"
+                                                            data-bs-auto-close='outside'>
+                                                    </button>
+
+
+                                                    <ul class="dropdown-menu checkbox-menu allow-focus dd-menu"
+                                                        aria-labelledby="dropdownMenu{{object.pk}}" role="menu">
+
+                                                        <form method="POST"
+                                                              action="{% url 'fileup:share' id=object.id %}">
+                                                            {% csrf_token %}
+
+                                                            {% if object.users_to_share|length > 0 %}
+
+                                                            {% for x in object.users_to_share %}
+
+                                                            <li class="list-group-item lgi-menu">
+                                                                <label>
+                                                                    <input class="form-check-input me-1"
+                                                                           type="checkbox" name="user_id"
+                                                                           value="{{x.pk}}">{{x.email}}
+                                                                </label>
+                                                            </li>
+
+                                                            {% endfor %}
+
+                                                            <li class="list-group-item lgi-menu share-btn">
+                                                                <button class="btn btn-outline-light"
+                                                                        aria-hidden="true">Share
+                                                                </button>
+                                                            </li>
+
+                                                            {% else %}
+                                                            <li class="list-group-item lgi-menu">
+                                                                You have already shared
+                                                                this file with all users
+                                                            </li>
+                                                            {% endif %}
+                                                        </form>
+                                                    </ul>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr style="vertical-align: middle;"
+                                            class="shareduser">
+                                            <td colspan="9" class="hiddenRow">
+                                                <div class="accordion-body collapse multi-collapse"
+                                                     id="demo{{object.id}}">
+                                                    <table class="table table-dark table-hover">
+                                                        {% if object.users_with_perms|length > 0 %}
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="width: 49%" scope="col" class="sharedhead">
+                                                                User
+                                                                Name
+                                                            </th>
+                                                            <th style="width: 50%" scope="col" class="sharedhead">
+                                                                User
+                                                                email
+                                                            </th>
+                                                            <th style="width: 1%" scope="col" class="sharedhead">
+                                                                Revoke
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for y in object.users_with_perms %}
+
+                                                        <form method="POST"
+                                                              action="{% url 'fileup:revoke' object.pk %}">
+                                                            {% csrf_token %}
+
+                                                            <tr class="sharedbody">
+                                                                <td>{{y.name}}</td>
+                                                                <td>{{y.email}}</td>
+                                                                <td colspan="0" style="display: none">
+                                                                    <label for="user_id"></label>
+                                                                    <input id="user_id" name="user_id"
+                                                                           value="{{y.pk}}">
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-outline-danger btn-sm fas fa-user-minus"
+                                                                            aria-hidden="true"
+                                                                            type="submit">
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+
+                                                        </form>
+                                                        </tbody>
+                                                        {% endfor %}
+
+                                                        <!--
+                                                        <thead>
+                                                        <tr class="shareduser">
+                                                            <th scope="col">User Name</th>
+                                                            <th scope="col">User email</th>
+                                                        </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                        <form method="POST"
+                                                              action="{% url 'fileup:revoke' id=object.id %}">
+                                                            {% csrf_token %}
+
+                                                            {% for y in object.users_with_perms %}
+                                                            <tr class="shareduser">
+                                                                <td>
+                                                                    <label>
+                                                                        <input class="form-check-input me-1"
+                                                                               type="checkbox" name="user_id"
+                                                                               value="{{y.id}}">{{y.name}}
+                                                                    </label>
+                                                                </td>
+                                                                <td>{{y.email}}</td>
+                                                            </tr>
+                                                            {% endfor %}
+
+                                                            <tr class="shareduser">
+                                                                <td colspan="0" style="display: none;">
+                                                                    <label>
+                                                                        <input name="permission"
+                                                                           value="view_userfile"/>view_userfile
+                                                                    </label>
+                                                                </td>
+                                                                <td colspan="3">
+                                                                    <button class="btn btn-outline-danger btn-sm fas fa-user-minus"
+                                                                            aria-hidden="true"></button>
+                                                                </td>
+                                                            </tr>
+                                                        </form>
+                                                        </tbody>
+                                                        -->
+
+
+                                                        {% else %}
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="text-align: center">You have not shared this
+                                                                file
+                                                                with anyone yet
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        {% endif %}
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        </tbody>
+
+                                        {% endfor %}
+
+                                    </table>
+                                </div>
+                                {% else %}
+                                <h3 class="display-6" style="text-align: center">You don't have file</h3>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load humanize %}
+
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col">
+                <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                    <h1 class="display-4">Shared with me</h1>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        {% if request.user.is_authenticated %}
+                            <div class="row">
+                                {% if files|length > 0 %}
+                                    <div class="table-wrap">
+                                        <table style="vertical-align: middle"
+                                               class="table table-bordered table-dark table-hover">
+                                            <thead>
+                                            <tr class="ownfiles">
+                                                <th style="width: 1%"></th>
+                                                <th style="width: 50%">File name</th>
+                                                <th>Uploader</th>
+                                                <th>Upload date</th>
+                                                <th style="width: 1%; text-align: center">Download</th>
+                                            </tr>
+                                            </thead>
+
+                                            {% for object in files %}
+                                                <tbody>
+                                                <tr class="ownfiles">
+
+                                                    <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                        url="{% url 'fileup:detail' object.pk %}"
+                                                        style="cursor: pointer;">
+                                                        <span class="fiv-cla fiv-icon-{{ object.extension }}"></span>
+                                                    </td>
+
+                                                    <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                        url="{% url 'fileup:detail' object.pk %}"
+                                                        style="cursor: pointer;">
+                                                        {{ object.title|truncatechars:50 }}
+                                                    </td>
+
+                                                    <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                        url="{% url 'fileup:detail' object.pk %}"
+                                                        style="cursor: pointer;">
+                                                        {{ object.uploaded_by|truncatechars:50 }}
+                                                    </td>
+
+                                                    <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                        url="{% url 'fileup:detail' object.pk %}"
+                                                        style="cursor: pointer;">
+                                                        {{ object.uploaded_at|naturaltime }}
+                                                    </td>
+
+                                                    <td style="text-align: center">
+                                                        <button class="btn btn-outline-primary btn-sm fas fa-download btn-list"
+                                                                type="button"
+                                                                onclick="location.href='{{ object.browse_file.url }}'">
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+                                                </tbody>
+                                            {% endfor %}
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <h3 class="display-6" style="text-align: center">No file have shared with you</h3>
+                                {% endif %}
+
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+

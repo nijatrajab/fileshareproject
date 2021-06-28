@@ -1,5 +1,6 @@
 import os
 import uuid
+import datetime
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -22,6 +23,7 @@ class UserFile(models.Model):
     description = models.CharField(max_length=500, null=True, blank=True)
     slug = models.SlugField(null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
     uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                     on_delete=models.CASCADE,
                                     related_name='userfile',
@@ -66,7 +68,8 @@ class UserFile(models.Model):
         users_with_perms = get_users_with_perms(
             self, only_with_perms_in=['view_userfile'], with_superusers=True
         )
-        users_to_share = [user for user in User.objects.all() if user not in users_with_perms]
+        users_to_share = [user for user in User.objects.all()
+                          if user not in users_with_perms]
         return users_to_share
 
     def admin_page(self):
@@ -74,3 +77,18 @@ class UserFile(models.Model):
             self, only_with_perms_in=['view_userfile']
         )
         return [i for i in users_with_perms]
+
+    @property
+    def size(self):
+        x = self.browse_file.size
+        y = 512000
+        if x < y:
+            value = round(x / 1000, 2)
+            ext = ' Kb'
+        elif x < y * 1000:
+            value = round(x / 1000000, 2)
+            ext = ' Mb'
+        else:
+            value = round(x / 1000000000, 2)
+            ext = ' Gb'
+        return str(value) + ext

@@ -1,0 +1,66 @@
+<div id="file_detail">
+    <div class="modal fade" tabindex="-1" role="dialog" id="detailmodal" aria-hidden="true">
+        <div class="modal-dialog mt-5" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h3 class="modal-title">File details</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="container-fluid" style="max-width:1200px">
+                        <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+
+                            <h1 class="display-4">{{object.title}}</h1>
+
+                            <div class="align-items-center">
+                                <div class="d-inline-flex  align-items-center">
+                                    <div class="list-group">
+                                        <a class="list-group-item list-group-item-action">Name</a>
+                                        <a class="list-group-item list-group-item-action">Email</a>
+                                        <a class="list-group-item list-group-item-action">Uploaded at</a>
+                                        <a class="list-group-item list-group-item-action">Last modified</a>
+                                        <a class="list-group-item list-group-item-action">Size</a>
+                                        <a class="list-group-item list-group-item-action">Type</a>
+                                    </div>
+
+                                    <div class="list-group">
+                                        <a class="list-group-item list-group-item-action">{{object.uploaded_by.name}}</a>
+                                        <a class="list-group-item list-group-item-action">{{object.uploaded_by}}</a>
+                                        <a class="list-group-item list-group-item-action">{{object.uploaded_at}}</a>
+                                        <a class="list-group-item list-group-item-action">{{object.modified_at}}</a>
+                                        <a class="list-group-item list-group-item-action">{{object.size}}</a>
+                                        <a class="list-group-item list-group-item-action"><span
+                                                class="fiv-cla fiv-icon-{{object.extension}}"
+                                                style="font-size: 0.9rem;"></span> {{object.extension}}</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="p-3 mb-2 bg-info text-white" style="text-align: center">
+                            Description
+                        </div>
+                        <p style="text-align: center">{{object.description}}</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
