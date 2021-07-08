@@ -7,7 +7,36 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-- Nothing yet!
+- Added "search user" functionality
+
+## [1.1.0] - 2021-07-08
+
+### Added
+
+- Added account view feature
+- Added account edit feature
+- Added not required `date birth`, `about me`, and `profile picture` (less than 10mb)
+- Added crop feature for uploaded profile picture
+- Added account dropdown menu to navbar
+- Added password change feature
+- Added password reset feature (development stage)
+- Added `advanced admin view` button for custom django admin page to admin page
+- Added search bar to `user` and `user file` list display on custom django admin view
+- Added custom `503 Service Unavailable` page
+
+### Changed
+
+- Location of `My files` and `Shared with me` features in the navbar changed to the `account dropdown menu`
+- Changed user files directory path
+- Changed list display for `user` and `user file` on custom django admin view
+- Changed fieldsets for `user` and `user file` on custom django admin view
+
+### Fixed
+
+- Fixed "case-sensitive" issue on `login`
+- Fixed authenticated user can see `login` and `signup page`
+- Fixed some redirecting issues
+
 
 ## [1.0.0] - 2021-06-28
 
@@ -56,5 +85,6 @@ button)
 - Fixed admin page not giving non-staff user 403 message
 
 
-[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/nijatrajab/fileshareproject/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/nijatrajab/fileshareproject/releases/tag/v1.0.0
