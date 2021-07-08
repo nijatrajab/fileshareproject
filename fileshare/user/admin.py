@@ -1,59 +1,47 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext as _
-from django.contrib.auth.models import Group
-from django.contrib import messages
 
 from guardian.admin import GuardedModelAdmin
 
 from .models import User
 from fileup.models import UserFile
-from .forms import UserCreationForm, UserChangeForm
 
 
 class FileShareAdminArea(admin.AdminSite):
-    site_header = 'FileShare Database'
+    site_header = 'FileShare Admin'
 
 
-class TestAdminPermissions(GuardedModelAdmin):
-    def has_add_permission(self, request):
-        return True
+class FileAdminPermissions(GuardedModelAdmin):
+    list_display = ('title', 'uploaded_by', 'uploaded_at', 'modified_at')
+    search_fields = ('title', 'uploaded_by')
+    ordering = ('id',)
+    readonly_fields = ('id', 'uploaded_by', 'uploaded_at', 'modified_at', 'browse_file')
+    filter_horizontal = ()
+    list_filter = ()
+    fieldsets = ((_('File info'), {'fields': ('title', 'description', 'uploaded_by')}),
+                 (_('Download'), {'fields': ('browse_file',)}),
+                 (_('Important dates'), {'fields': ('uploaded_at', 'modified_at')}),
+                 )
 
-    def has_change_permission(self, request, obj=None):
-        return True
 
-    def has_delete_permission(self, request, obj=None):
-        if obj != None and request.POST.get('action') == 'delete_selected':
-            messages.add_message(request, messages.ERROR, (
-                'Are you sure?'
-            ))
-        return obj is None or obj.id != 13
-
-    def has_view_permission(self, request, obj=None):
-        return True
+class UserAdminPermissions(GuardedModelAdmin):
+    list_display = ('email', 'name', 'date_birth', 'date_joined', 'last_login', 'is_staff')
+    search_fields = ('email', 'name')
+    ordering = ('id',)
+    readonly_fields = ('id', 'date_joined', 'last_login')
+    filter_horizontal = ()
+    list_filter = ()
+    fieldsets = ((None, {'fields': ('email', 'password')}),
+                 (_('Personal info'), {'fields': ('name', 'about_me', 'date_birth', 'profile_image')}),
+                 (_('Permissions'),
+                  {'fields': ('is_active', 'is_staff',
+                              'is_superuser')}),
+                 (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
+                 )
 
 
 fileshare_site = FileShareAdminArea(name='FileShareAdmin')
 
-
-class UserAdmin(BaseUserAdmin):
-    form = UserChangeForm
-    add_form = UserCreationForm
-
-    ordering = ('id',)
-    list_display = ['email', 'name', 'is_staff']
-    fieldsets = ((None, {'fields': ('email', 'password')}),
-                 (_('Personal info'), {'fields': ('name',)}),
-                 (_('Permissions'),
-                  {'fields': ('is_active', 'is_staff',
-                              'is_superuser', 'has_perm')}),
-                 (_('Important dates'), {'fields': ('last_login',)}),
-                 )
-    add_fieldsets = ((None, {'classes': ('wide',),
-                             'fields': ('email', 'name',
-                                        'password1', 'password2'), }),)
-
-
-fileshare_site.register(User, TestAdminPermissions)
-fileshare_site.register(UserFile, TestAdminPermissions)
-fileshare_site.register(Group, TestAdminPermissions)
+fileshare_site.register(User, UserAdminPermissions)
+fileshare_site.register(UserFile, FileAdminPermissions)
+# fileshare_site.register(Group,)

@@ -1,6 +1,5 @@
 import os
 import uuid
-import datetime
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -14,7 +13,7 @@ from user.models import User
 def user_directory_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{uuid.uuid4()}.{ext}'
-    return 'user_{0}/{1}'.format(instance.uploaded_by.id, filename)
+    return 'user_files/user_{0}/{1}'.format(instance.uploaded_by.id, filename)
 
 
 class UserFile(models.Model):

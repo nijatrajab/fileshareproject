@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <img src="{% static 'images/maintenance/maintenance.gif' %}" alt="Maintenance">
+                <h1 class="display-4 text-danger">STATUS 503</h1>
+            </div>
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h4 class="text-info"><i class="fas fa-wrench faa-wrench animated faa-fast"></i> The page is temporarily under maintenance</h4>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

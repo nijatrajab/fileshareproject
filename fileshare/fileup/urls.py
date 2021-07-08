@@ -14,6 +14,7 @@ urlpatterns = [
     path('shared/', views.FileSharedListView.as_view(), name='shared'),
     path('share/<id>/', views.share_file, name='share'),
     path('revoke/<id>/', views.revoke_access, name='revoke'),
+    # path('revoke/', views.ra, name='revoke'),
 
     path('adminpage/', views.AdminPage.as_view(), name='adminpage'),
 ]

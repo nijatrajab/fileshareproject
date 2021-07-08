@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+
+            <style type="text/css">
+                .image-container {
+                    max-width: 250px;
+                    height: auto;
+                }
+
+                .field-heading {
+                    color: #737373;;
+                }
+            </style>
+
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4">My profile</h1>
+            </div>
+
+            <div class="container-fluid">
+                <div class="d-flex flex-row justify-content-center flex-wrap align-items-start">
+
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">Profile Info</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="image-container mx-auto mb-4">
+                                        <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image"
+                                             alt="fileshare logo" id="id_profile_image" src="{{profile_image}}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 text-center">
+                                        <p class="mt-4 mb-1 field-heading">Name</p>
+                                        <h6>{{name}}</h6>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <p class="mt-4 mb-1 field-heading">Email</p>
+                                        <h6>{{email}}</h6>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <p class="mt-4 mb-1 field-heading">Date birth</p>
+                                        <h6>{{date_birth}}</h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <p class="mt-4 mb-1 field-heading">About me</p>
+                                        <h6>{{about_me}}</h6>
+                                    </div>
+                                </div>
+                                {% if is_self %}
+                                <div class="row">
+                                    <div class="col-12 mb-3 text-center">
+                                        <a href="{% url 'user:account_edit' user_id=id %}">
+                                            <button class="btn btn-outline-dark">Update profile</button>
+                                        </a>
+                                        <a href="{% url 'password_change' %}">
+                                            <button class="btn btn-outline-danger">Change password</button>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+

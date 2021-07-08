@@ -127,4 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-/fileshare/media/
+/fileshare/media/profile_images
+/fileshare/media/user_files

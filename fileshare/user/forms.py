@@ -1,11 +1,13 @@
 from django import forms
 from django.contrib.auth import password_validation
-from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm
 from django.core.exceptions import ValidationError
+from django.forms import SelectDateWidget
+from django.utils.datastructures import MultiValueDict
 from guardian.shortcuts import assign_perm
 from crispy_bootstrap5.bootstrap5 import FloatingField
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
+from crispy_forms.layout import Layout, HTML, Div, Field, MultiWidgetField
 from crispy_forms.bootstrap import StrictButton, FormActions
 
 from . import models
@@ -60,17 +62,43 @@ class UserCreationForm(forms.ModelForm):
                 'password2',
             ),
             FormActions(
-                StrictButton('Sign up', css_class='btn btn-outline-dark btn-lg', type='submit', id='signup'),
+                StrictButton('Sign up', css_class='btn btn-outline-dark btn-lg', type='submit',
+                             id='signup'),
             ),
         )
 
 
-class UserChangeForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField()
+class UsrChangeForm(UserChangeForm):
+    date_birth = forms.DateField(widget=SelectDateWidget(years=range(1900, 2022), empty_label=("Year", "Month", "Day")),
+                                 required=False)
 
     class Meta:
         model = models.User
-        fields = ('email', 'password', 'name', 'is_active', 'is_staff')
+        fields = ('id', 'email', 'name', 'profile_image', 'about_me', 'date_birth')
+
+    def __init__(self, data, *args, **kwargs):
+        initial = kwargs.get("initial", {})
+        data = MultiValueDict({**{k: [v] for k, v in initial.items()}, **data})
+        super().__init__(data, *args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(Field(
+                'profile_image', onchange="readURL(this)"), css_class='d-none'),
+            FloatingField(
+                Div(Div('name', css_class='col-md-4 text-center'),
+                    Div('email', css_class='col-md-4 text-center'), css_class='row justify-content-md-center'),
+                Div(MultiWidgetField('date_birth',
+                                     attrs=({'style': 'width: 15%; display: inline-block;'}),
+                                     css_class='col-md-4 text-center'), css_class='row'),
+                Div(Div('about_me', css_class='col text-center'), css_class='row')
+            ),
+            FormActions(
+                StrictButton('Save changes', css_class='btn btn-outline-dark', type='submit',
+                             id='edit_profile'),
+                HTML("""<a href="{% url 'user:account' user_id=request.user.id %}">
+                <button class="btn btn-outline-info">Back profile</button></a>"""),
+            ),
+        )
 
 
 class LoginForm(AuthenticationForm):
@@ -86,5 +114,23 @@ class LoginForm(AuthenticationForm):
             ),
             FormActions(
                 StrictButton('Login', css_class='btn btn-outline-dark btn-lg', type='submit', id='login'),
+            ),
+        )
+
+
+class PassChangeForm(PasswordChangeForm):
+
+    def __init__(self, *args, **kwargs):
+        super(PassChangeForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            FloatingField(
+                'old_password',
+                'new_password1',
+                'new_password2',
+            ),
+            FormActions(
+                StrictButton('Change', css_class='btn btn-outline-dark btn-lg', type='submit', id='change_password'),
             ),
         )

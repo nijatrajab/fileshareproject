@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form form.helper %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+
+            <div class="container-fluid">
+                <div class="d-flex flex-row justify-content-center flex-wrap align-items-start">
+                    <div class="col-md-4 text-center">
+
+                        <h1>Sign up</h1>
+                        <br>
+                        <form id="signupForm" method="POST" name="signup">
+                            {% csrf_token %}
+                            {% crispy form %}
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+
+    // Username validation handler
+    $(document).ready(function () {
+        // catch the form's submit event
+        $('#id_email').keyup(function () {
+            // create an AJAX call
+            $.ajax({
+                data: $(this).serialize(), // get the form data
+                url: "{% url 'user:validate_username' %}",
+                // on success
+                success: function (response) {
+                    if (response.is_taken == true) {
+                        $("#signup").prop("disabled", true);
+                        $('#id_email').removeClass('is-valid').addClass('is-invalid');
+                        $('#id_email').after('<div class="invalid-feedback d-block" id="usernameError">This email is not available!</div>')
+                    } else {
+                        $("#signup").removeAttr("disabled");
+                        $('#id_email').removeClass('is-invalid').addClass('is-valid');
+                        $('#usernameError').remove();
+
+                    }
+
+                },
+                // on error
+                error: function (response) {
+                    // alert the error if any error occured
+                    console.log(response.responseJSON.errors)
+                }
+            });
+
+            return false;
+        });
+    })
+
+
+</script>
+{% endblock extrascripts %}

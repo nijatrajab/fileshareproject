@@ -26,6 +26,9 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # develop
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -79,6 +82,8 @@ TEMPLATES = [
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # default
     'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    'user.backends.CaseInsensitiveModelBackend'
 )
 
 WSGI_APPLICATION = 'fileshare.wsgi.application'
@@ -136,13 +141,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, '/')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+RANDOM_AVATAR = '%s/fs_default/' % MEDIA_ROOT
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'media_cdn'),
+    os.path.join(BASE_DIR, 'static_cdn')
+]
+
+TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
@@ -154,6 +165,7 @@ ANONYMOUS_USER_NAME = None
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+PRF_IMG_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb max profile image size
 
 from django.contrib.messages import constants as messages
 
@@ -164,3 +176,5 @@ MESSAGE_TAGS = {
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+BASE_URL = "http://127.0.0.1:8000"

@@ -1,198 +1,205 @@
 {% extends 'base.html' %}
 {% block content %}
-    {% load humanize %}
+{% load humanize %}
 
-    {% include "fileup/file_detail.html" %}
+{% include "fileup/file_detail.html" %}
 
-    <div class="container mt-3">
-        <div class="row">
-            <div class="col">
-                <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-                    <h1 class="display-4">All Files</h1>
-                    <h5 style="font-weight: normal; padding-top: 10px">
-                        {{ files|length }} files uploaded by {{ users|length }} users
-                    </h5>
-                </div>
-                <div class="row">
-                    <div class="col-12 mb-3 text-center">
-                        <button class="btn btn-outline-primary"
-                                type="button" id="collapse-init"
-                                {% if files|length == 0 %}
-                                disabled
-                                {% endif %}>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col">
+            <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                <h1 class="display-4">All Files</h1>
+                <h5 style="font-weight: normal; padding-top: 10px">
+                    {{ files|length }} files uploaded by {{ users|length }} users
+                </h5>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3 text-center">
+                    <a href="{% url 'FileShareAdmin:index' %}">
+                        <button class="btn btn-outline-dark" type="button">
                             <div class="faa-parent animated-hover">
-                                <i class="fas fa-angle-double-down faa-bounce faa-reverse faa-fast"></i> Expand
+                                <i class="fas fa-cog faa-spin"></i> Advanced admin view
                             </div>
                         </button>
-                    </div>
-                    <div class="panel-group" id="accordion">
-                        <div class="col-12 mb-3">
-                            {% if request.user.is_authenticated and request.user.is_superuser %}
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% if files|length > 0 %}
-                                            <div class="table-wrap">
-                                                <table style="vertical-align: middle; border-collapse:collapse;"
-                                                       class="table table-condensed table-bordered table-dark table-hover">
-                                                    <thead>
-                                                    <tr class="ownfiles">
-                                                        <th style="width: 1%"><i class="far fa-file"></i></th>
-                                                        <th style="width: 50%">
-                                                            File name
-                                                        </th>
-                                                        <th>
-                                                            Upload date
-                                                        </th>
-                                                        <th style="width: 1%; text-align: center">
-                                                            Shared
-                                                        </th>
-                                                        <th style="width: 1%; text-align: center">Download</th>
+                    </a>
+                    <button class="btn btn-outline-primary"
+                            type="button" id="collapse-init"
+                            {% if files|length == 0 %}
+                            disabled
+                            {% endif %}>
+                        <div class="faa-parent animated-hover">
+                            <i class="fas fa-angle-double-down faa-bounce faa-reverse faa-fast"></i> Expand
+                        </div>
+                    </button>
+                </div>
+                <div class="panel-group" id="accordion">
+                    <div class="col-12 mb-3">
+                        {% if request.user.is_authenticated and request.user.is_superuser %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% if files|length > 0 %}
+                                <div class="table-wrap">
+                                    <table style="vertical-align: middle; border-collapse:collapse;"
+                                           class="table table-condensed table-bordered table-dark table-hover">
+                                        <thead>
+                                        <tr class="ownfiles">
+                                            <th style="width: 1%"><i class="far fa-file"></i></th>
+                                            <th style="width: 50%">
+                                                File name
+                                            </th>
+                                            <th>
+                                                Upload date
+                                            </th>
+                                            <th style="width: 1%; text-align: center">
+                                                Shared
+                                            </th>
+                                            <th style="width: 1%; text-align: center">Download</th>
 
-                                                    </tr>
-                                                    </thead>
+                                        </tr>
+                                        </thead>
 
-                                                    {% for object in files %}
+                                        {% for object in files %}
 
-                                                        <tbody>
+                                        <tbody>
 
-                                                        <tr class="ownfiles">
+                                        <tr class="ownfiles">
 
-                                                            <td class="md-modal fl-list" id="md-{{ object.pk }}"
-                                                                url="{% url 'fileup:detail' object.pk %}"
-                                                                style="vertical-align: middle; cursor: pointer;">
-                                                                <span class="fiv-cla fiv-icon-{{ object.extension }}"></span>
-                                                            </td>
+                                            <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                url="{% url 'fileup:detail' object.pk %}"
+                                                style="vertical-align: middle; cursor: pointer;">
+                                                <span class="fiv-cla fiv-icon-{{ object.extension }}"></span>
+                                            </td>
 
-                                                            <td class="md-modal fl-list" id="md-{{ object.pk }}"
-                                                                url="{% url 'fileup:detail' object.pk %}"
-                                                                style="vertical-align: middle; cursor: pointer;">
-                                                                {{ object.title|truncatechars:50 }}
-                                                            </td>
+                                            <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                url="{% url 'fileup:detail' object.pk %}"
+                                                style="vertical-align: middle; cursor: pointer;">
+                                                {{ object.title|truncatechars:50 }}
+                                            </td>
 
-                                                            <td class="md-modal fl-list" id="md-{{ object.pk }}"
-                                                                url="{% url 'fileup:detail' object.pk %}"
-                                                                style="vertical-align: middle; cursor: pointer;">
-                                                                {{ object.uploaded_at|naturaltime }}
-                                                            </td>
+                                            <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                url="{% url 'fileup:detail' object.pk %}"
+                                                style="vertical-align: middle; cursor: pointer;">
+                                                {{ object.uploaded_at|naturaltime }}
+                                            </td>
 
-                                                            <td class="fl-list" style="vertical-align: middle">
-                                                                <button class="panel-title accordion-toggle
+                                            <td class="fl-list" style="vertical-align: middle">
+                                                <button class="panel-title accordion-toggle
                                                                 btn btn-outline-light
                                                                 btn-sm fas fa-user-friends"
-                                                                        style="border-radius: 40px"
-                                                                        data-bs-toggle="collapse" type="button"
-                                                                        data-bs-target="#demo{{ object.id }}"
-                                                                        aria-expanded="false"
-                                                                        aria-controls="demo{{ object.id }}">
-                                                                </button>
-                                                            </td>
+                                                        style="border-radius: 40px"
+                                                        data-bs-toggle="collapse" type="button"
+                                                        data-bs-target="#demo{{ object.id }}"
+                                                        aria-expanded="false"
+                                                        aria-controls="demo{{ object.id }}">
+                                                </button>
+                                            </td>
 
-                                                            <td style="vertical-align: middle; text-align: center">
-                                                                <button class="btn btn-outline-primary btn-sm fas fa-download btn-list"
-                                                                        type="button"
-                                                                        onclick="location.href='{{ object.browse_file.url }}'">
-                                                                </button>
-                                                            </td>
+                                            <td style="vertical-align: middle; text-align: center">
+                                                <button class="btn btn-outline-primary btn-sm fas fa-download btn-list"
+                                                        type="button"
+                                                        onclick="location.href='{{ object.browse_file.url }}'">
+                                                </button>
+                                            </td>
 
+                                        </tr>
+                                        <tr style="vertical-align: middle;"
+                                            class="shareduser">
+                                            <td colspan="9" class="hiddenRow">
+                                                <div class="accordion-body collapse multi-collapse"
+                                                     id="demo{{ object.id }}">
+                                                    <table class="table table-dark table-hover">
+                                                        {% if object.users_with_perms|length > 0 %}
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="width: 47%" scope="col"
+                                                                class="sharedhead">
+                                                                User
+                                                                Name
+                                                            </th>
+                                                            <th style="width: 50%" scope="col"
+                                                                class="sharedhead">
+                                                                User
+                                                                email
+                                                            </th>
+                                                            <th style="width: 1%" scope="col"
+                                                                class="sharedhead">
+                                                                <i class="far fa-eye"></i>
+                                                            </th>
+                                                            <th style="width: 1%" scope="col"
+                                                                class="sharedhead">
+                                                                <i class="far fa-edit"></i>
+                                                            </th>
+                                                            <th style="width: 1%" scope="col"
+                                                                class="sharedhead">
+                                                                <i class="fas fa-eraser"></i>
+                                                            </th>
                                                         </tr>
-                                                        <tr style="vertical-align: middle;"
-                                                            class="shareduser">
-                                                            <td colspan="9" class="hiddenRow">
-                                                                <div class="accordion-body collapse multi-collapse"
-                                                                     id="demo{{ object.id }}">
-                                                                    <table class="table table-dark table-hover">
-                                                                        {% if object.users_with_perms|length > 0 %}
-                                                                            <thead>
-                                                                            <tr>
-                                                                                <th style="width: 47%" scope="col"
-                                                                                    class="sharedhead">
-                                                                                    User
-                                                                                    Name
-                                                                                </th>
-                                                                                <th style="width: 50%" scope="col"
-                                                                                    class="sharedhead">
-                                                                                    User
-                                                                                    email
-                                                                                </th>
-                                                                                <th style="width: 1%" scope="col"
-                                                                                    class="sharedhead">
-                                                                                    <i class="far fa-eye"></i>
-                                                                                </th>
-                                                                                <th style="width: 1%" scope="col"
-                                                                                    class="sharedhead">
-                                                                                    <i class="far fa-edit"></i>
-                                                                                </th>
-                                                                                <th style="width: 1%" scope="col"
-                                                                                    class="sharedhead">
-                                                                                    <i class="fas fa-eraser"></i>
-                                                                                </th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                            {% for y in object.admin_page %}
-                                                                                <tbody>
-                                                                                <tr class="sharedbody">
-                                                                                    <td>{{ y.name }}</td>
-                                                                                    <td>{{ y.email }}</td>
-                                                                                    <td><i class="fas fa-check-circle"
-                                                                                           style="color: greenyellow;"></i>
-                                                                                    </td>
-                                                                                    {% if object.uploaded_by == y %}
-                                                                                        <td>
-                                                                                            <i class="fas fa-check-circle"
-                                                                                               style="color: greenyellow;"></i>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <i class="fas fa-check-circle"
-                                                                                               style="color: greenyellow;"></i>
-                                                                                        </td>
-                                                                                    {% else %}
-                                                                                        <td>
-                                                                                            <i class="fas fa-times-circle"
-                                                                                               style="color: red;"></i>
-                                                                                        </td>
-                                                                                        <td>
-                                                                                            <i class="fas fa-times-circle"
-                                                                                               style="color: red;"></i>
-                                                                                        </td>
-                                                                                    {% endif %}
-                                                                                </tr>
-                                                                                </tbody>
-                                                                            {% endfor %}
-                                                                        {% else %}
-                                                                            <thead>
-                                                                            <tr>
-                                                                                <th style="text-align: center">User has
-                                                                                    not shared this
-                                                                                    file
-                                                                                    with anyone yet
-                                                                                </th>
-                                                                            </tr>
-                                                                            </thead>
-                                                                        {% endif %}
-                                                                    </table>
-                                                                </div>
+                                                        </thead>
+                                                        {% for y in object.admin_page %}
+                                                        <tbody>
+                                                        <tr class="sharedbody">
+                                                            <td>{{ y.name }}</td>
+                                                            <td>{{ y.email }}</td>
+                                                            <td><i class="fas fa-check-circle"
+                                                                   style="color: greenyellow;"></i>
                                                             </td>
+                                                            {% if object.uploaded_by == y %}
+                                                            <td>
+                                                                <i class="fas fa-check-circle"
+                                                                   style="color: greenyellow;"></i>
+                                                            </td>
+                                                            <td>
+                                                                <i class="fas fa-check-circle"
+                                                                   style="color: greenyellow;"></i>
+                                                            </td>
+                                                            {% else %}
+                                                            <td>
+                                                                <i class="fas fa-times-circle"
+                                                                   style="color: red;"></i>
+                                                            </td>
+                                                            <td>
+                                                                <i class="fas fa-times-circle"
+                                                                   style="color: red;"></i>
+                                                            </td>
+                                                            {% endif %}
                                                         </tr>
-
                                                         </tbody>
+                                                        {% endfor %}
+                                                        {% else %}
+                                                        <thead>
+                                                        <tr>
+                                                            <th style="text-align: center">User has
+                                                                not shared this
+                                                                file
+                                                                with anyone yet
+                                                            </th>
+                                                        </tr>
+                                                        </thead>
+                                                        {% endif %}
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
 
-                                                    {% endfor %}
+                                        </tbody>
 
-                                                </table>
-                                            </div>
-                                        {% else %}
-                                            <h3 class="display-6" style="text-align: center">No file</h3>
-                                        {% endif %}
-                                    </div>
+                                        {% endfor %}
+
+                                    </table>
                                 </div>
-                            {% endif %}
+                                {% else %}
+                                <h3 class="display-6" style="text-align: center">No file</h3>
+                                {% endif %}
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
+</div>
 
 {% endblock content %}
 

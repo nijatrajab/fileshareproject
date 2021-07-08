@@ -14,6 +14,7 @@
           rel="stylesheet">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/file-icon-vectors@1.0.0/dist/file-icon-classic.min.css"/>
     <link rel="stylesheet" href="{% static 'assets/animate/fontanimate/css/font-awesome-animation.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/cropperjs/dist/cropper.min.css' %}">
 
     <link rel="stylesheet" href="{% static 'custom/css/style.css' %}">
 
@@ -41,6 +42,7 @@
     <title>FS</title>
 </head>
 <body>
+
 {% include "fileup/file_detail.html" %}
 
 {% include "_header.html" %}
@@ -54,6 +56,19 @@
 <script src="{% static 'assets/js/popper.js' %}"></script>
 <script src="{% static 'assets/js/bootstrap.js' %}"></script>
 <script src="https://kit.fontawesome.com/fe49569996.js" crossorigin="anonymous"></script>
+<script type="module" src="{% static 'assets/cropperjs/dist/cropper.min.js' %}"></script>
+
+<script type="text/javascript">
+    function displayLoadingSpinner(isDisplayed){
+        var spinner = document.getElementById("id_loading_spinner")
+        if(isDisplayed){
+            spinner.style.display = "block"
+        }
+        else {
+            spinner.style.display = "none"
+        }
+    }
+</script>
 
 {% endblock scripts %}
 

@@ -29,13 +29,10 @@
     <!-- End Messages -->
     <!-- Navbar -->
     <!-- Important: columns can be used directly in navbar since it is d-flex -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" role="navigation"
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark" role="navigation"
          id="navbar">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">FileShare</a>
-            {% if user.is_authenticated %}
-                <b style="color: white">{{ request.user.name }}</b>
-            {% endif %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarMy" aria-controls="navbarMy"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -44,14 +41,32 @@
             <div id="navbarMy" class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
-                        {% if request.user.is_superuser %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'fileup:adminpage' %}"> Admin</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'fileup:list' %}"> My Files </a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'fileup:shared' %}"> Shared with me</a></li>
-                        {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'user:logout' %}"> Logout </a></li>
+                    <li class="nav-item" style="padding-right: 10px">
+                        <form class="d-flex">
+                            <input class="form-control me-2" type="search"
+                                   placeholder="Search" aria-label="Search"
+                                   id="search_user" name="search_user">
+                            <button class="btn btn-outline-light" type="submit" onclick="return searchQuery()">Search</button>
+                        </form>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <b class="user-image rounded-circle" data-bs-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false" role="button"
+                           style="color: white">{{ request.user.name }}</b>
+                        <img class="user-image rounded-circle" id="profile_link"
+                                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button"
+                                             src="{{ request.user.profile_image.url }}" alt="fileshare logo" width="40" height="40">
+                        <ul class="dropdown-menu nd-menu" aria-labelledby="profile_link">
+                            <li><a class="dropdown-item" href="{% url 'user:account' user_id=request.user.id %}"> Account</a></li>
+                            {% if request.user.is_superuser %}
+                                <li><a class="dropdown-item" href="{% url 'fileup:adminpage' %}"> Admin</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'fileup:list' %}"> My Files </a></li>
+                                <li><a class="dropdown-item" href="{% url 'fileup:shared' %}"> Shared with me</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'user:logout' %}"> Logout</a></li>
+                        </ul>
+                    </li>
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'user:login' %}"> Login </a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'user:signup' %}"> Sign up </a></li>
@@ -63,3 +78,11 @@
     <!-- End Navbar -->
 </header>
 <!-- End Header -->
+
+<script type="text/javascript">
+    function searchQuery(){
+        var query = document.getElementById('search_user').value;
+        window.location.replace("{% url 'user:search_user' %}?q=" + query);
+        return false
+    }
+</script>
