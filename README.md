@@ -40,4 +40,4 @@ _Make sure Docker is running as an administrator. For the first time it may take
 
 ## Version History
 
-* See [commit change](https://github.com/nijatrajab/fileshareproject/commits/main)
+* Check out [ChangeLog](https://github.com/nijatrajab/fileshareproject/blob/main/CHANGELOG.md)
