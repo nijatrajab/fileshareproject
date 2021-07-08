@@ -56,5 +56,5 @@ button)
 - Fixed admin page not giving non-staff user 403 message
 
 
-[Unreleased]: https://github.com/nickjj/flask-static-digest/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/nickjj/flask-static-digest/releases/tag/v1.0.0
+[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/nijatrajab/fileshareproject/releases/tag/v1.0.0
