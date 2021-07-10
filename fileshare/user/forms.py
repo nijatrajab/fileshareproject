@@ -90,7 +90,7 @@ class UsrChangeForm(UserChangeForm):
                 Div(MultiWidgetField('date_birth',
                                      attrs=({'style': 'width: 15%; display: inline-block;'}),
                                      css_class='col-md-4 text-center'), css_class='row'),
-                Div(Div('about_me', css_class='col text-center'), css_class='row')
+                Div(Div('about_me', style="height: 100px", css_class='col text-center'), css_class='row')
             ),
             FormActions(
                 StrictButton('Save changes', css_class='btn btn-outline-dark', type='submit',

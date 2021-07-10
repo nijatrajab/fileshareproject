@@ -130,7 +130,7 @@ def account_search_view(request, *args, **kwargs):
 
             context['accounts'] = accounts
 
-    return render(request, "status/503.html", context)
+    return render(request, "user/account_search_result.html", context)
 
 
 def account_edit_view(request, *args, **kwargs):
