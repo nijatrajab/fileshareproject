@@ -138,17 +138,19 @@ def share_file(request, id):
 
 @login_required()
 def revoke_access(request, id):
-    # remove_perm for multiple users or groups is not available now
-    # usids = request.POST.getlist('id')
-    # usobjs = User.objects.filter(id__in=usids)
-
-    usid = request.POST.get('user_id')
-    usobj = User.objects.get(id=usid)
+    usids = request.POST.getlist('user_id')
+    usobjs = User.objects.filter(id__in=usids)
     obj = UserFile.objects.get(id=id)
 
-    messages.warning(request, f"You have revoked {usobj.name}'s permission to view {obj.title}.")
+    users_names_list = [u.name for u in usobjs]
+    users_names = ', '.join(map(str, users_names_list))
 
-    remove_perm('fileup.view_userfile', usobj, obj)
+    if usobjs:
+        messages.warning(request, f"You have revoked {users_names}'s permission to view {obj.title}.")
+        for i in usobjs:
+            remove_perm('fileup.view_userfile', i, obj)
+    else:
+        messages.error(request, f"You must choose user to revoke permission to view {obj.title}.")
 
     return redirect(reverse('fileup:list'))
 

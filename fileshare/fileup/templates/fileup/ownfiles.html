@@ -190,90 +190,40 @@
                                                      id="demo{{object.id}}">
                                                     <table class="table table-dark table-hover">
                                                         {% if object.users_with_perms|length > 0 %}
+
                                                         <thead>
-                                                        <tr>
-                                                            <th style="width: 49%" scope="col" class="sharedhead">
-                                                                User
-                                                                Name
-                                                            </th>
-                                                            <th style="width: 50%" scope="col" class="sharedhead">
-                                                                User
-                                                                email
-                                                            </th>
-                                                            <th style="width: 1%" scope="col" class="sharedhead">
-                                                                Revoke
-                                                            </th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        {% for y in object.users_with_perms %}
-
-                                                        <form method="POST"
-                                                              action="{% url 'fileup:revoke' object.pk %}">
-                                                            {% csrf_token %}
-
-                                                            <tr class="sharedbody">
-                                                                <td>{{y.name}}</td>
-                                                                <td>{{y.email}}</td>
-                                                                <td colspan="0" style="display: none">
-                                                                    <label for="user_id"></label>
-                                                                    <input id="user_id" name="user_id"
-                                                                           value="{{y.pk}}">
-                                                                </td>
-                                                                <td>
-                                                                    <button class="btn btn-outline-danger btn-sm fas fa-user-minus"
-                                                                            aria-hidden="true"
-                                                                            type="submit">
-                                                                    </button>
-                                                                </td>
+                                                            <tr class="shareduser">
+                                                                <th scope="col">User Name</th>
+                                                                <th scope="col">User email</th>
                                                             </tr>
-
-                                                        </form>
-                                                        </tbody>
-                                                        {% endfor %}
-
-                                                        <!--
-                                                        <thead>
-                                                        <tr class="shareduser">
-                                                            <th scope="col">User Name</th>
-                                                            <th scope="col">User email</th>
-                                                        </tr>
                                                         </thead>
 
                                                         <tbody>
-                                                        <form method="POST"
-                                                              action="{% url 'fileup:revoke' id=object.id %}">
-                                                            {% csrf_token %}
+                                                            <form method="POST"
+                                                                  action="{% url 'fileup:revoke' id=object.id %}">
+                                                                {% csrf_token %}
 
-                                                            {% for y in object.users_with_perms %}
-                                                            <tr class="shareduser">
-                                                                <td>
-                                                                    <label>
-                                                                        <input class="form-check-input me-1"
-                                                                               type="checkbox" name="user_id"
-                                                                               value="{{y.id}}">{{y.name}}
-                                                                    </label>
-                                                                </td>
-                                                                <td>{{y.email}}</td>
-                                                            </tr>
-                                                            {% endfor %}
+                                                                {% for y in object.users_with_perms %}
+                                                                <tr class="shareduser">
+                                                                    <td>
+                                                                        <label>
+                                                                            <input class="form-check-input me-1"
+                                                                                   type="checkbox" name="user_id"
+                                                                                   value="{{y.id}}">{{y.name}}
+                                                                        </label>
+                                                                    </td>
+                                                                    <td>{{y.email}}</td>
+                                                                </tr>
+                                                                {% endfor %}
 
-                                                            <tr class="shareduser">
-                                                                <td colspan="0" style="display: none;">
-                                                                    <label>
-                                                                        <input name="permission"
-                                                                           value="view_userfile"/>view_userfile
-                                                                    </label>
-                                                                </td>
-                                                                <td colspan="3">
-                                                                    <button class="btn btn-outline-danger btn-sm fas fa-user-minus"
-                                                                            aria-hidden="true"></button>
-                                                                </td>
-                                                            </tr>
-                                                        </form>
+                                                                <tr class="shareduser">
+                                                                    <td colspan="3" class="text-center">
+                                                                        <button class="btn btn-outline-danger btn-sm"
+                                                                                aria-hidden="true"><i class="fas fa-user-minus"></i> Revoke sharing</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </form>
                                                         </tbody>
-                                                        -->
-
 
                                                         {% else %}
                                                         <thead>
