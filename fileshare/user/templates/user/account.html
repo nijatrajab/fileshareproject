@@ -58,10 +58,10 @@
                                 {% if is_self %}
                                 <div class="row">
                                     <div class="col-12 mb-3 text-center">
-                                        <a href="{% url 'user:account_edit' user_id=id %}">
+                                        <a href="{% url 'user:account_edit' user_id=id %}" style="text-decoration:none">
                                             <button class="btn btn-outline-dark">Update profile</button>
                                         </a>
-                                        <a href="{% url 'password_change' %}">
+                                        <a href="{% url 'password_change' %}" style="text-decoration:none">
                                             <button class="btn btn-outline-danger">Change password</button>
                                         </a>
                                     </div>
