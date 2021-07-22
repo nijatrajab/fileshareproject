@@ -167,7 +167,8 @@ def account_search_view(request, *args, **kwargs):
             if user.is_authenticated:
                 auth_user_friend_list = FriendList.objects.get(user=user)
                 for account in search_res:
-                    accounts.append((account, auth_user_friend_list.is_mutual_friend(account)))
+                    if account != user:
+                        accounts.append((account, auth_user_friend_list.is_mutual_friend(account)))
                 context['accounts'] = accounts
             else:
                 for account in search_res:

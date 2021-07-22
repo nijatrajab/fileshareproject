@@ -7,6 +7,11 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+_No unreleased changes_
+
+
+## [1.1.1] - 2021-07-22
+
 ### Added
 - Added Friend System (not active in file sharing)
 - Added `friends list` and `friend requests` to user profile page
@@ -24,6 +29,8 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - The user cannot change the profile picture correctly
 - Fixed a bug that prevented the selection of the correct data in the `user basic detail view`
+- Fixed the problem of the user seeing himself in the `user search result`
+
 
 ## [1.1.0] - 2021-07-08
 
@@ -101,6 +108,7 @@ button)
 - Fixed admin page not giving non-staff user 403 message
 
 
-[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/nijatrajab/fileshareproject/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/nijatrajab/fileshareproject/releases/tag/v1.0.0
