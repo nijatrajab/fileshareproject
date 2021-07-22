@@ -5,6 +5,7 @@ from guardian.admin import GuardedModelAdmin
 
 from .models import User
 from fileup.models import UserFile
+from friend.models import FriendList, FriendRequest
 
 
 class FileShareAdminArea(admin.AdminSite):
@@ -40,8 +41,42 @@ class UserAdminPermissions(GuardedModelAdmin):
                  )
 
 
+class FriendListAdminPermissions(GuardedModelAdmin):
+    list_display = ['user',]
+    search_fields = ['user',]
+    ordering = ()
+    readonly_fields = ['user',]
+    filter_horizontal = ()
+    list_filter = ['user',]
+    # fieldsets = ((None, {'fields': ('email', 'password')}),
+    #              (_('Personal info'), {'fields': ('name', 'about_me', 'date_birth', 'profile_image')}),
+    #              (_('Permissions'),
+    #               {'fields': ('is_active', 'is_staff',
+    #                           'is_superuser')}),
+    #              (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
+    #              )
+
+
+class FriendRequestAdminPermissions(GuardedModelAdmin):
+    list_display = ('sender', 'receiver')
+    search_fields = ('sender__email', 'sender__name', 'receiver__email', 'receiver__name')
+    ordering = ()
+    # readonly_fields = ('id', 'date_joined', 'last_login')
+    filter_horizontal = ()
+    list_filter = ('sender', 'receiver')
+    # fieldsets = ((None, {'fields': ('email', 'password')}),
+    #              (_('Personal info'), {'fields': ('name', 'about_me', 'date_birth', 'profile_image')}),
+    #              (_('Permissions'),
+    #               {'fields': ('is_active', 'is_staff',
+    #                           'is_superuser')}),
+    #              (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
+    #              )
+
+
 fileshare_site = FileShareAdminArea(name='FileShareAdmin')
 
 fileshare_site.register(User, UserAdminPermissions)
 fileshare_site.register(UserFile, FileAdminPermissions)
+fileshare_site.register(FriendList, FriendListAdminPermissions)
+fileshare_site.register(FriendRequest, FriendRequestAdminPermissions)
 # fileshare_site.register(Group,)

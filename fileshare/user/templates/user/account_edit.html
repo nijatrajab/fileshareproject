@@ -51,7 +51,7 @@
                 <div class="d-flex flex-row justify-content-center flex-wrap align-items-start">
 
                     <div class="col-md-8">
-                        <div class="card">
+                        <div class="card text-white bg-dark">
                             <div class="card-header">
                                 <h5 class="card-title">Edit Profile Info</h5>
                             </div>
@@ -74,7 +74,7 @@
                                                  id="id_profile_image_display" src="{{form.initial.profile_image.url}}"
                                                  alt="fileshare logo">
                                             <div class="middle" id="id_middle_container">
-                                                <div class="text" id="id_text">Edit</div>
+                                                <div class="text" id="id_text">Upload</div>
                                             </div>
                                         </div>
                                     </div>
@@ -196,10 +196,10 @@
 
     function enableImageOverlay(){
         var text = document.getElementById("id_text")
-        text.style.backgroundColor = "#ff5656"
-        text.style.color = "#ffffff"
+        text.style.border = "2px solid #ffc107"
+        text.style.color = "#ffc107"
         text.style.borderRadius = "45%"
-        text.style.fontSize = "14px"
+        text.style.fontSize = "15px"
         text.style.padding = "16px 32px"
         text.style.cursor = "pointer"
 
@@ -291,6 +291,5 @@
 
     }
 </script>
-
 
 {% endblock content %}

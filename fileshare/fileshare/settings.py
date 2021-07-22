@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'guardian',
     'user',
+    'friend',
     'fileup',
     'bootstrap5',
     'widget_tweaks',

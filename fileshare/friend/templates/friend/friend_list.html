@@ -76,6 +76,7 @@
 
     .detail-box {
         box-sizing: border-box;
+        z-index: 100;
         width: 448px;
         height: 600px;
         background: rgba(18, 18, 18, 0.8);
@@ -87,12 +88,12 @@
         justify-content: center;
     }
 
-    .account-detail {
+    .friend-detail {
         padding-top: 50px;
         padding-left: 0;
     }
 
-    .account-detail div {
+    .friend-detail div {
         color: white;
         padding-bottom: 7px;
     }
@@ -115,21 +116,16 @@
 
     /* Text states (for js) */
     .hide {
-        visibility: hidden;
         opacity: 0;
         left: 67%;
         top: calc(23.8% + 8em);
+        visibility: hidden;
     }
 
     .show {
         opacity: 1;
         left: 67%;
         top: calc(23.8% + 6em);
-    }
-
-    .clicked {
-        background: rgba(255, 0, 0, 0.8);
-        border-radius: 90px;
     }
 
     .unclicked {
@@ -142,8 +138,8 @@
         border-radius: 90px;
     }
 
-    .not_friend_clicked {
-        background: rgba(255, 0, 0, 0.8);
+    .self_clicked {
+        background: rgba(0, 196, 255, 0.8);
         border-radius: 90px;
     }
 
@@ -151,33 +147,33 @@
         border: solid 3px rgba(153, 194, 1, 0.8);
     }
 
-    .not_friend {
-        border: solid 3px rgba(255, 0, 0, 0.8);
+    .self {
+        border: solid 3px rgba(0, 196, 255, 0.8);
     }
 
 
 </style>
 
 <div class="container">
-    {% if accounts %}
+    {% if friends %}
     <div class="row">
-        {% for account in accounts %}
+        {% for friend in friends %}
         <div class="col-sm-3">
 
-            <div class="wrapper user_ids" id="user{{account.0.id}}">
+            <div class="wrapper user_ids" id="user{{friend.0.id}}">
 
                 <div class="box box2 unclicked
-                 {% if account.1 %}is_friend{% else %}{% if account.0 !=  request.user %}not_friend{% endif %}{% endif %}"
-                     id="user{{account.0.id}}Button">
+                 {% if friend.1 %}is_friend{% else %}{% if friend.0 == request.user %}self{% endif %}{% endif %}"
+                     id="user{{friend.0.id}}Button">
                     <div>
                         <div class="row">
 
                             <div class="col-md-4">
-                                <img src="{{account.0.profile_image.url}}" alt="avatar"
+                                <img src="{{friend.0.profile_image.url}}" alt="avatar"
                                      class="avatar">
                             </div>
                             <div class="col avatar-text">
-                                {{account.0.name}}
+                                {{friend.0.name}}
                             </div>
 
                         </div>
@@ -190,21 +186,21 @@
 
         <div class="col-auto">
 
-            <div class="detail-box itemDetail hide" id="user{{account.0.id}}Detail">
+            <div class="detail-box itemDetail hide" id="user{{friend.0.id}}Detail">
                 <div>
                     <div class="image-container mx-auto mb-4">
                         <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image"
-                             alt="fileshare logo" id="id_profile_image{{account.0.id}}"
-                             src="{{account.0.profile_image.url}}">
+                             alt="fileshare logo" id="id_profile_image{{friend.0.id}}"
+                             src="{{friend.0.profile_image.url}}">
                     </div>
-                    <div class="account-detail">
+                    <div class="friend-detail">
                         <div class="col" style="padding-left: 70px">
                             <div class="row">
                                 <div class="col-md-4">
                                     <h6>Name: </h6>
                                 </div>
                                 <div class="col">
-                                    <h6>{{account.0.name}}</h6>
+                                    <h6>{{friend.0.name}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -214,7 +210,7 @@
                                     <h6>Email: </h6>
                                 </div>
                                 <div class="col">
-                                    <h6>{{account.0.email}}</h6>
+                                    <h6>{{friend.0.email}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -224,12 +220,12 @@
                                     <h6>Date birth: </h6>
                                 </div>
                                 <div class="col">
-                                    <h6>{{account.0.date_birth}}</h6>
+                                    <h6>{{friend.0.date_birth}}</h6>
                                 </div>
                             </div>
                         </div>
-                        <div class="col" style="text-align: center;">
-                            <a href="{% url 'user:account' user_id=account.0.id %}">
+                        <div class="col" style="text-align: center">
+                            <a href="{% url 'user:account' user_id=friend.0.id %}">
                                 <button class="btn btn-outline-light">Go to profile</button>
                             </a>
                         </div>
@@ -278,15 +274,15 @@
 
         if (userBoxId.hasClass("unclicked")) {
 
-            $('.box2').removeClass("friend_clicked").removeClass("not_friend_clicked").addClass("unclicked");
+            $('.box2').removeClass("friend_clicked").removeClass("self_clicked").addClass("unclicked");
             if (userBoxId.hasClass("is_friend")) {
                 userBoxId.removeClass("unclicked").addClass("friend_clicked");
-            } else if (userBoxId.hasClass("not_friend")) {
-                userBoxId.removeClass("unclicked").addClass("not_friend_clicked");
+            } else if (userBoxId.hasClass("self")) {
+                userBoxId.removeClass("unclicked").addClass("self_clicked");
             }
 
         } else {
-            userBoxId.removeClass("friend_clicked").removeClass("not_friend_clicked").addClass("unclicked");
+            userBoxId.removeClass("friend_clicked").removeClass("self_clicked").addClass("unclicked");
         }
     })
 

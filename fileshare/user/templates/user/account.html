@@ -14,6 +14,10 @@
                 .field-heading {
                     color: #737373;;
                 }
+
+                a {
+                    text-decoration:none;
+                }
             </style>
 
             <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -24,7 +28,7 @@
                 <div class="d-flex flex-row justify-content-center flex-wrap align-items-start">
 
                     <div class="col-md-8">
-                        <div class="card">
+                        <div class="card text-white bg-dark">
                             <div class="card-header">
                                 <h5 class="card-title">Profile Info</h5>
                             </div>
@@ -37,32 +41,32 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 text-center">
-                                        <p class="mt-4 mb-1 field-heading">Name</p>
+                                        <p class="mt-2 mb-1 field-heading">Name</p>
                                         <h6>{{name}}</h6>
                                     </div>
                                     <div class="col-md-4 text-center">
-                                        <p class="mt-4 mb-1 field-heading">Email</p>
+                                        <p class="mt-2 mb-1 field-heading">Email</p>
                                         <h6>{{email}}</h6>
                                     </div>
                                     <div class="col-md-4 text-center">
-                                        <p class="mt-4 mb-1 field-heading">Date birth</p>
+                                        <p class="mt-2 mb-1 field-heading">Date birth</p>
                                         <h6>{{date_birth}}</h6>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col text-center">
-                                        <p class="mt-4 mb-1 field-heading">About me</p>
+                                        <p class="mt-2 mb-1 field-heading">About me</p>
                                         <h6>{{about_me}}</h6>
                                     </div>
                                 </div>
                                 {% if is_self %}
-                                <div class="row">
+                                <div class="row pt-4">
                                     <div class="col-12 mb-3 text-center">
-                                        <a href="{% url 'user:account_edit' user_id=id %}" style="text-decoration:none">
-                                            <button class="btn btn-outline-dark">Update profile</button>
+                                        <a href="{% url 'user:account_edit' user_id=id %}">
+                                            <button class="btn btn-outline-light">Update profile</button>
                                         </a>
-                                        <a href="{% url 'password_change' %}" style="text-decoration:none">
-                                            <button class="btn btn-outline-danger">Change password</button>
+                                        <a href="{% url 'password_change' %}">
+                                            <button class="btn btn-outline-warning">Change password</button>
                                         </a>
                                     </div>
                                 </div>
@@ -70,12 +74,171 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="col-md-3">
+
+                        {% if request.user.is_authenticated %}
+                        <div class="d-flex flex-column mb-4">
+
+                            <!-- THEM to YOU -->
+                            {% if request_sent == 0 %}
+                            <div class="card m-0 px-1 pb-4 text-white bg-dark">
+                                <div class="d-flex flex-column pt-4">
+                                    <div class="d-flex flex-row align-items-center justify-content-center pb-2">
+                                        <span class="friend-text align-items-center mr-2">Friend Request</span>
+                                    </div>
+                                    <div class="d-flex flex-row align-items-center justify-content-center">
+                                        <span id="id_cancel_{{id}}" class="decline-friend-request me-2"
+                                              onclick='triggerAcceptFriendRequest("{{pending_friend_request_id}}")'>
+                                            <button class="btn btn-sm btn-outline-info"><i class="fas fa-user-check"></i> accept</button>
+                                        </span>
+                                        <span id="id_confirm_{{id}}" class="confirm-friend-request"
+                                              onclick='triggerDeclineFriendRequest("{{pending_friend_request_id}}")'>
+                                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-user-times"></i> decline</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="card m-0 px-1 pb-4 text-white bg-dark">
+                                <!-- Cancel Friend Request / Send Friend Request / Remove Friend -->
+                                {% if is_friend == False and is_self == False %}
+                                <!-- You sent them a request -->
+                                {% if request_sent == 1 %}
+                                <div class="d-flex flex-column align-items-center pt-4">
+                                    <button class="btn btn-outline-danger" id="id_cancel_friend_request_btn">
+                                        <i class="fas fa-user-minus"></i> cancel
+                                    </button>
+                                </div>
+                                {% endif %}
+                                <!-- No requests have been sent -->
+                                {% if request_sent == -1 %}
+                                <div class="d-flex flex-column align-items-center pt-4">
+                                    <button class="btn btn-outline-info" id="id_send_friend_request_btn">
+                                        <i class="fas fa-user-plus"></i> send
+                                    </button>
+                                </div>
+                                {% endif %}
+                                {% endif %}
+
+
+                                {% if is_friend %}
+                                <div class="dropdown pt-4 m-auto">
+                                    <button class="btn btn-secondary dropdown-toggle friends-btn" type="button"
+                                            id="id_friends_toggle" data-bs-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        Friends
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="id_friends_toggle">
+                                        <a class="dropdown-item" href="#"
+                                           onclick="removeFriend('{{id}}', onFriendRemoved)">Unfriend</a>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!-- Friend list link -->
+                                <div class="d-flex flex-column pt-4">
+                                    <a href="{% url 'friend:friend_list' user_id=id %}">
+                                        <div class="d-flex flex-row align-items-center justify-content-center">
+                                            <button class="btn btn-outline-info">
+                                                <i class="fas fa-users"></i> Friends ({{friends|length}})
+                                            </button>
+                                        </div>
+                                    </a>
+                                </div>
+
+                            </div>
+
+                            {% if friend_requests %}
+                            <div class="card m-0 px-3 pb-4 text-white bg-dark">
+                                <!-- Friend requests -->
+                                <div class="d-flex flex-column pt-4">
+                                    <a href="{% url 'friend:friend_requests' user_id=id %}">
+                                        <div class="d-flex flex-row align-items-center justify-content-center">
+                                            <button class="btn btn-outline-info">
+                                                <i class="fas fa-users-cog"></i> Friend Requests
+                                                ({{friend_requests|length}})
+                                            </button>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        {% endif %}
+                    </div>
+
+
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+
+    function onFriendRequestSent() {
+        location.reload();
+    }
+
+    function onFriendRequestCancelled() {
+        location.reload();
+    }
+
+    function onFriendRemoved() {
+        location.reload();
+    }
+
+    function onFriendRequestAccepted() {
+        location.reload();
+    }
+
+    function onFriendRequestDeclined() {
+        location.reload();
+    }
+
+
+    var sendFriendRequestBtn = document.getElementById("id_send_friend_request_btn")
+    if (sendFriendRequestBtn != null) {
+        sendFriendRequestBtn.addEventListener("click", function () {
+            sendFriendRequest("{{id}}", onFriendRequestSent)
+        })
+    }
+
+    var cancelFriendRequestBtn = document.getElementById("id_cancel_friend_request_btn")
+    if (cancelFriendRequestBtn != null) {
+        cancelFriendRequestBtn.addEventListener("click", function () {
+            cancelFriendRequest("{{id}}", onFriendRequestCancelled)
+        })
+    }
+
+    var removeFriendBtn = document.getElementById("id_unfriend_btn")
+    if (removeFriendBtn != null) {
+        removeFriendBtn.addEventListener("click", function () {
+            removeFriend("{{id}}", onFriendRemoved)
+        })
+    }
+
+    function triggerAcceptFriendRequest(friend_request_id) {
+        acceptFriendRequest(friend_request_id, onFriendRequestAccepted)
+    }
+
+    function triggerDeclineFriendRequest(friend_request_id) {
+        declineFriendRequest(friend_request_id, onFriendRequestDeclined)
+    }
+
+</script>
+
+{% include 'friend/snippets/send_friend_request.html' %}
+{% include 'friend/snippets/accept_friend_request.html' %}
+{% include 'friend/snippets/decline_friend_request.html' %}
+{% include 'friend/snippets/cancel_friend_request.html' %}
+{% include 'friend/snippets/remove_friend.html' %}
+{#% include 'chat/create_or_return_private_chat.html' %#}
 
 {% endblock content %}
 

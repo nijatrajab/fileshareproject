@@ -16,6 +16,9 @@ from django.core import files
 
 from .forms import UserCreationForm, LoginForm, PassChangeForm, UsrChangeForm
 from .models import User
+from friend.models import FriendList, FriendRequest
+from friend.utils import get_friend_request_or_false
+from friend.friend_status import FriendRequestStatus
 
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
@@ -100,17 +103,53 @@ def account_view(request, *args, **kwargs):
         context['date_birth'] = account.date_birth
         context['about_me'] = account.about_me
 
+        try:
+            friend_list = FriendList.objects.get(user=account)
+        except FriendList.DoesNotExist:
+            friend_list = FriendList(user=account)
+            friend_list.save()
+        friends = friend_list.friends.all()
+        context['friends'] = friends
+
         is_self = True
         is_friend = False
+        request_sent = FriendRequestStatus.NO_REQUEST_SENT.value
+        friend_requests = None
         user = request.user
         if user.is_authenticated and user != account:
             is_self = False
+            if friends.filter(pk=user.id):
+                is_friend = True
+            else:
+                is_friend = False
+
+                # CASE1: Friend request Them to You
+                if get_friend_request_or_false(sender=account, receiver=user) != False:
+                    request_sent = FriendRequestStatus.THEM_SENT_TO_YOU.value
+                    context['pending_friend_request_id'] = get_friend_request_or_false(sender=account, receiver=user).id
+
+                # CASE2: Friend request You to Them
+                elif get_friend_request_or_false(sender=user, receiver=account) != False:
+                    request_sent = FriendRequestStatus.YOU_SENT_TO_THEM.value
+
+                # CASE3: No request
+                else:
+                    request_sent = FriendRequestStatus.NO_REQUEST_SENT.value
+
         elif not user.is_authenticated:
             is_self = False
+
+        else:
+            try:
+                friend_requests = FriendRequest.objects.filter(receiver=user, is_active=True)
+            except:
+                pass
 
         context['is_self'] = is_self
         context['is_friend'] = is_friend
         context['BASE_URL'] = settings.BASE_URL
+        context['request_sent'] = request_sent
+        context['friend_requests'] = friend_requests
 
         return render(request, "user/account.html", context)
 
@@ -123,13 +162,17 @@ def account_search_view(request, *args, **kwargs):
         if len(search_query) > 0:
             search_res = User.objects.filter(email__icontains=search_query).filter(
                 name__icontains=search_query).distinct()
-            # user = request.user
+            user = request.user
             accounts = []
-            for account in search_res:
-                accounts.append((account, False))
-
-            context['accounts'] = accounts
-
+            if user.is_authenticated:
+                auth_user_friend_list = FriendList.objects.get(user=user)
+                for account in search_res:
+                    accounts.append((account, auth_user_friend_list.is_mutual_friend(account)))
+                context['accounts'] = accounts
+            else:
+                for account in search_res:
+                    accounts.append((account, False))
+                context['accounts'] = accounts
     return render(request, "user/account_search_result.html", context)
 
 

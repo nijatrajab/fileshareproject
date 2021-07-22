@@ -10,7 +10,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -127,5 +126,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# user files
 /fileshare/media/profile_images
 /fileshare/media/user_files
+/fileshare/media_cdn/temp

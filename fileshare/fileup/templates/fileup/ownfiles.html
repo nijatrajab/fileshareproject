@@ -159,7 +159,8 @@
                                                                 <label>
                                                                     <input class="form-check-input me-1"
                                                                            type="checkbox" name="user_id"
-                                                                           value="{{x.pk}}">{{x.email}}
+                                                                           value="{{x.pk}}">
+                                                                    {{x.email}}
                                                                 </label>
                                                             </li>
 
@@ -172,7 +173,8 @@
                                                             </li>
 
                                                             {% else %}
-                                                            <li class="list-group-item lgi-menu">
+                                                            <li class="list-group-item lgi-menu"
+                                                                style="text-align: center;">
                                                                 You have already shared
                                                                 this file with all users
                                                             </li>
@@ -209,7 +211,9 @@
                                                                         <label>
                                                                             <input class="form-check-input me-1"
                                                                                    type="checkbox" name="user_id"
-                                                                                   value="{{y.id}}">{{y.name}}
+                                                                                   value="{{y.id}}">
+
+                                                                            {{y.name}}
                                                                         </label>
                                                                     </td>
                                                                     <td>{{y.email}}</td>
@@ -229,8 +233,7 @@
                                                         <thead>
                                                         <tr>
                                                             <th style="text-align: center">You have not shared this
-                                                                file
-                                                                with anyone yet
+                                                                file with anyone yet
                                                             </th>
                                                         </tr>
                                                         </thead>

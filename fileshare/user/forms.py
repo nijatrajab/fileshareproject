@@ -90,13 +90,13 @@ class UsrChangeForm(UserChangeForm):
                 Div(MultiWidgetField('date_birth',
                                      attrs=({'style': 'width: 15%; display: inline-block;'}),
                                      css_class='col-md-4 text-center'), css_class='row'),
-                Div(Div('about_me', style="height: 100px", css_class='col text-center'), css_class='row')
+                Div(Div('about_me', style="height: auto", css_class='col text-center'), css_class='row')
             ),
             FormActions(
-                StrictButton('Save changes', css_class='btn btn-outline-dark', type='submit',
+                StrictButton('Save changes', css_class='btn btn-outline-warning', type='submit',
                              id='edit_profile'),
                 HTML("""<a href="{% url 'user:account' user_id=request.user.id %}">
-                <button class="btn btn-outline-info">Back profile</button></a>"""),
+                <button class="btn btn-outline-light">Back profile</button></a>"""),
             ),
         )
 

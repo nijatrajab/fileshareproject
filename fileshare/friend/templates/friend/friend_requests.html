@@ -94,7 +94,7 @@
 
     .account-detail div {
         color: white;
-        padding-bottom: 7px;
+        padding-bottom: 3px;
     }
 
     .image-container {
@@ -137,18 +137,9 @@
         border-radius: 90px;
     }
 
-    .friend_clicked {
-        background: rgba(153, 194, 1, 0.8);
-        border-radius: 90px;
-    }
-
     .not_friend_clicked {
         background: rgba(255, 0, 0, 0.8);
         border-radius: 90px;
-    }
-
-    .is_friend {
-        border: solid 3px rgba(153, 194, 1, 0.8);
     }
 
     .not_friend {
@@ -159,25 +150,23 @@
 </style>
 
 <div class="container">
-    {% if accounts %}
+    {% if friend_requests %}
     <div class="row">
-        {% for account in accounts %}
+        {% for friend_request in friend_requests %}
         <div class="col-sm-3">
 
-            <div class="wrapper user_ids" id="user{{account.0.id}}">
+            <div class="wrapper user_ids" id="user{{friend_request.sender.id}}">
 
-                <div class="box box2 unclicked
-                 {% if account.1 %}is_friend{% else %}{% if account.0 !=  request.user %}not_friend{% endif %}{% endif %}"
-                     id="user{{account.0.id}}Button">
+                <div class="box box2 unclicked not_friend" id="user{{friend_request.sender.id}}Button">
                     <div>
                         <div class="row">
 
                             <div class="col-md-4">
-                                <img src="{{account.0.profile_image.url}}" alt="avatar"
+                                <img src="{{friend_request.sender.profile_image.url}}" alt="avatar"
                                      class="avatar">
                             </div>
                             <div class="col avatar-text">
-                                {{account.0.name}}
+                                {{friend_request.sender.name}}
                             </div>
 
                         </div>
@@ -190,12 +179,12 @@
 
         <div class="col-auto">
 
-            <div class="detail-box itemDetail hide" id="user{{account.0.id}}Detail">
+            <div class="detail-box itemDetail hide" id="user{{friend_request.sender.id}}Detail">
                 <div>
                     <div class="image-container mx-auto mb-4">
                         <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image"
-                             alt="fileshare logo" id="id_profile_image{{account.0.id}}"
-                             src="{{account.0.profile_image.url}}">
+                             alt="fileshare logo" id="id_profile_image{{friend_request.sender.id}}"
+                             src="{{friend_request.sender.profile_image.url}}">
                     </div>
                     <div class="account-detail">
                         <div class="col" style="padding-left: 70px">
@@ -204,7 +193,7 @@
                                     <h6>Name: </h6>
                                 </div>
                                 <div class="col">
-                                    <h6>{{account.0.name}}</h6>
+                                    <h6>{{friend_request.sender.name}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -214,7 +203,7 @@
                                     <h6>Email: </h6>
                                 </div>
                                 <div class="col">
-                                    <h6>{{account.0.email}}</h6>
+                                    <h6>{{friend_request.sender.email}}</h6>
                                 </div>
                             </div>
                         </div>
@@ -224,14 +213,37 @@
                                     <h6>Date birth: </h6>
                                 </div>
                                 <div class="col">
-                                    <h6>{{account.0.date_birth}}</h6>
+                                    <h6>{{friend_request.sender.date_birth}}</h6>
                                 </div>
                             </div>
                         </div>
-                        <div class="col" style="text-align: center;">
-                            <a href="{% url 'user:account' user_id=account.0.id %}">
+                        <div class="col pb-3" style="text-align: center">
+                            <a href="{% url 'user:account' user_id=friend_request.sender.id %}">
                                 <button class="btn btn-outline-light">Go to profile</button>
                             </a>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <div class="d-flex flex-row align-items-center justify-content-center pb-1">
+                                    <span class="friend-text align-items-center mr-2" style="font-size: 16px">Friend Request</span>
+                                </div>
+                                <div class="d-flex flex-row align-items-center justify-content-center">
+                                    <span id="id_confirm_{{friend_request.sender.id}}"
+                                              class="confirm-friend-request me-2"
+                                              onclick='triggerAcceptFriendRequest("{{friend_request.id}}")'>
+                                        <button class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-user-check"></i> accept
+                                        </button>
+                                    </span>
+                                    <span id="id_cancel_{{friend_request.sender.id}}"
+                                          class="decline-friend-request"
+                                          onclick='triggerDeclineFriendRequest("{{friend_request.id}}")'>
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-user-times"></i> decline
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -257,6 +269,22 @@
 {% block extrascripts %}
 <script type="text/javascript">
 
+    function onFriendRequestAccepted(){
+		location.reload();
+	}
+
+	function onFriendRequestDeclined(){
+		location.reload();
+	}
+
+	function triggerAcceptFriendRequest(friend_request_id){
+		acceptFriendRequest(friend_request_id, onFriendRequestAccepted)
+	}
+
+	function triggerDeclineFriendRequest(friend_request_id){
+		declineFriendRequest(friend_request_id, onFriendRequestDeclined)
+	}
+
     $(".user_ids").click(function () {
         var userId = $(this).attr('id');
         var userDetailId = $("#" + userId + "Detail");
@@ -268,13 +296,6 @@
         } else {
             userDetailId.removeClass("show").addClass("hide");
         }
-
-        // if (userBoxId.hasClass("unclicked")) {
-        //     $('.box2').removeClass("clicked").addClass("unclicked");
-        //     userBoxId.removeClass("unclicked").addClass("clicked");
-        // } else {
-        //     userBoxId.removeClass("clicked").addClass("unclicked");
-        // }
 
         if (userBoxId.hasClass("unclicked")) {
 
@@ -291,4 +312,8 @@
     })
 
 </script>
+
+{% include 'friend/snippets/accept_friend_request.html' %}
+{% include 'friend/snippets/decline_friend_request.html' %}
+
 {% endblock extrascripts %}

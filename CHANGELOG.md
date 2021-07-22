@@ -7,7 +7,23 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-- Added "search user" functionality
+### Added
+- Added Friend System (not active in file sharing)
+- Added `friends list` and `friend requests` to user profile page
+- Added `friend request` to user basic detail view in friend requests page
+- Added `user search` feature
+- Added revoke sharing feature for multiple users
+- Added `user basic detail view` to user search result page
+- Added `go to profile` button to user basic detail view in user search result page
+- Added `Friend list` and `Friend requests` to django advanced admin view
+
+### Changed
+- The user will be able to determine whether the searched users are friends based on the red(_not-friend_) and green(_friend_) colors
+- Both `Profile Info` and `Edit Profile` Info cards color changed to dark
+
+### Fixed
+- The user cannot change the profile picture correctly
+- Fixed a bug that prevented the selection of the correct data in the `user basic detail view`
 
 ## [1.1.0] - 2021-07-08
 

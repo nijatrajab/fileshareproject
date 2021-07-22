@@ -21,6 +21,7 @@ urlpatterns = [
     path('user/', include('user.urls', namespace='user')),
     path('user/', include('django.contrib.auth.urls')),
     path('file/', include('fileup.urls', namespace='file')),
+    path('friend/', include('friend.urls', namespace='friend')),
 ]
 
 if settings.DEBUG:
