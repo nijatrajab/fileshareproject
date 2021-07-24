@@ -7,4 +7,5 @@ django-guardian>=2.4.0,<2.5.0
 django-crispy-forms>=1.12.0,<1.13.0
 crispy-bootstrap5>=0.4,<0.5
 opencv-python
+django-imagekit>=4.0.2,<4.1.0
 flake8>=3.9.1,<4.0.0

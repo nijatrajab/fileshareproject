@@ -138,6 +138,11 @@
         border-radius: 90px;
     }
 
+    .not_friend_clicked {
+        background: rgba(255, 0, 0, 0.8);
+        border-radius: 90px;
+    }
+
     .self_clicked {
         background: rgba(0, 196, 255, 0.8);
         border-radius: 90px;
@@ -145,6 +150,10 @@
 
     .is_friend {
         border: solid 3px rgba(153, 194, 1, 0.8);
+    }
+
+    .not_friend {
+        border: solid 3px rgba(255, 0, 0, 0.8);
     }
 
     .self {
@@ -161,15 +170,16 @@
         <div class="col-sm-3">
 
             <div class="wrapper user_ids" id="user{{friend.0.id}}">
-
                 <div class="box box2 unclicked
-                 {% if friend.1 %}is_friend{% else %}{% if friend.0 == request.user %}self{% endif %}{% endif %}"
+                            {% if friend.1 %}is_friend
+                            {% elif friend.0 == request.user %}self
+                            {% elif friend.0 != request.user %}not_friend{% endif %}"
                      id="user{{friend.0.id}}Button">
                     <div>
                         <div class="row">
 
                             <div class="col-md-4">
-                                <img src="{{friend.0.profile_image.url}}" alt="avatar"
+                                <img src="{{friend.0.profile_image_thumb.url}}" alt="avatar"
                                      class="avatar">
                             </div>
                             <div class="col avatar-text">
@@ -191,7 +201,7 @@
                     <div class="image-container mx-auto mb-4">
                         <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image"
                              alt="fileshare logo" id="id_profile_image{{friend.0.id}}"
-                             src="{{friend.0.profile_image.url}}">
+                             src="{{friend.0.profile_image_detail_thumb.url}}">
                     </div>
                     <div class="friend-detail">
                         <div class="col" style="padding-left: 70px">
@@ -274,13 +284,14 @@
 
         if (userBoxId.hasClass("unclicked")) {
 
-            $('.box2').removeClass("friend_clicked").removeClass("self_clicked").addClass("unclicked");
+            $('.box2').removeClass("friend_clicked").removeClass("self_clicked").removeClass("not_friend_clicked").addClass("unclicked");
             if (userBoxId.hasClass("is_friend")) {
                 userBoxId.removeClass("unclicked").addClass("friend_clicked");
             } else if (userBoxId.hasClass("self")) {
                 userBoxId.removeClass("unclicked").addClass("self_clicked");
+            } else if (userBoxId.hasClass("not_friend")) {
+                userBoxId.removeClass("unclicked").addClass("not_friend_clicked")
             }
-
         } else {
             userBoxId.removeClass("friend_clicked").removeClass("self_clicked").addClass("unclicked");
         }

@@ -61,7 +61,7 @@
                                             <th>
                                                 Upload date
                                             </th>
-                                            <th style="width: 1%; text-align: center">
+                                            <th style="width: 5.8%; text-align: center">
                                                 Shared
                                             </th>
                                             <th colspan="4" style="width: 1%; text-align: center">Actions</th>
@@ -76,8 +76,10 @@
                                         <tr class="ownfiles">
                                             <td class="fl-list"
                                                 style="vertical-align: middle;">
-                                                <input type="checkbox"
-                                                       value="{{object.pk}}" class="file-check">
+                                                <label for="{{object.pk}}">
+                                                    <input type="checkbox" id="{{object.pk}}"
+                                                           value="{{object.pk}}" class="file-check">
+                                                </label>
                                             </td>
 
                                             <td class="md-modal fl-list" id="md-{{object.pk}}"
@@ -157,9 +159,11 @@
 
                                                             <li class="list-group-item lgi-menu">
                                                                 <label>
-                                                                    <input class="form-check-input me-1"
+                                                                    <input class="form-check-input sharing-checkbox me-1"
                                                                            type="checkbox" name="user_id"
                                                                            value="{{x.pk}}">
+                                                                    <img src="{{x.profile_image_thumb.url}}" alt="avatar"
+                                                                         width=20 height="20px" class="rounded-circle avatar">
                                                                     {{x.email}}
                                                                 </label>
                                                             </li>
@@ -209,10 +213,11 @@
                                                                 <tr class="shareduser">
                                                                     <td>
                                                                         <label>
-                                                                            <input class="form-check-input me-1"
+                                                                            <input class="form-check-input revoke-sharing-checkbox me-1"
                                                                                    type="checkbox" name="user_id"
                                                                                    value="{{y.id}}">
-
+                                                                            <img src="{{y.profile_image_thumb.url}}" alt="avatar"
+                                                                                 width="20px" height="20px" class="rounded-circle avatar">
                                                                             {{y.name}}
                                                                         </label>
                                                                     </td>
@@ -222,7 +227,7 @@
 
                                                                 <tr class="shareduser">
                                                                     <td colspan="3" class="text-center">
-                                                                        <button class="btn btn-outline-danger btn-sm"
+                                                                        <button class="btn btn-outline-warning btn-sm"
                                                                                 aria-hidden="true"><i class="fas fa-user-minus"></i> Revoke sharing</button>
                                                                     </td>
                                                                 </tr>

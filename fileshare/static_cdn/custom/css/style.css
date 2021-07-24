@@ -213,7 +213,7 @@ table.admin-table {
     background-color: #af6363;
 }
 
-ul.nd-menu{
+ul.nd-menu {
     background-color: #212529;
 }
 
@@ -257,11 +257,6 @@ ul.dd-menu {
     text-align: center;
 }
 
-.form-check-input:checked {
-    background-color: #d9534f;
-    border-color: #d9534f;
-}
-
 .dropdown-shared {
     top: 100%;
     z-index: 1000;
@@ -296,6 +291,7 @@ ul.dd-menu {
     padding: 0 !important;
 }
 
+/*All type of alert messages*/
 .alert {
     display: inline-block;
     position: absolute;
@@ -343,27 +339,11 @@ ul.dd-menu {
     }
 }
 
+/*Background gradient for base.html*/
 body {
     background: linear-gradient(-45deg, #e6bdff, #c2fffd, #f8ffbd, #ffcdcd);
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
-}
-
-.shared-badge {
-    position: absolute;
-    background: linear-gradient(-45deg, #e6bdff, #c2fffd, #f8ffbd, #ffcdcd);
-    animation: gradient 15s ease infinite;
-    font-size: 8px;
-    line-height: 0;
-    font-weight: 900;
-    text-align: center;
-    vertical-align: middle;
-    color: #723131;
-    padding: 1em 0.7em;
-    border-radius: 100vh;
-}
-
-.user-image{
 }
 
 @keyframes gradient {
@@ -378,47 +358,79 @@ body {
     }
 }
 
+/*Checkbox on ownfiles page*/
+input[type="checkbox"] {
+    visibility: hidden;
+    position: relative;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
 
+input[type="checkbox"]:before,
+input[type="checkbox"]:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    visibility: visible;
+    width: 1.2em;
+    height: 1.2em;
+    box-sizing: border-box;
+}
 
+input[type="checkbox"]:before {
+    border-radius: 1em;
+    border: 1px solid #f0f0f0;
+    transition: border 0.1s ease-out;
+}
 
+input[type="checkbox"].file-check:before {
+    border-color: #ff605f;
+}
 
-/*.circle {*/
-/*  position: relative;*/
-/*  width: 32px;*/
-/*  height: 32px;*/
-/*  border-radius: 100%;*/
-/*}*/
+input[type="checkbox"].file-all-check:before {
+    border-color: #ff605f;
+}
 
-/*.circle {*/
-/*  position: relative;*/
-/*  width: 32px;*/
-/*  height: 32px;*/
-/*  margin: 1px;*/
-/*  border-radius: 100%;*/
-/*  background: brown;*/
-/*}*/
+input[type="checkbox"].sharing-checkbox:before {
+    border-color: #0dcaf0;
+}
 
-/*.circle::before {*/
-/*  !* Final appearance of the outer circle *!*/
-/*  width: 36px;*/
-/*  height: 36px;*/
-/*  border: 6px solid #ffffff;*/
-/*  border-radius: 100%;*/
+input[type="checkbox"].revoke-sharing-checkbox:before {
+    border-color: #ffc107;
+}
 
-/*  !* Position it absolutely and center it relative to the circle *!*/
-/*  !* Remember to scale it down, so it's hidden nicely in the back *!*/
-/*  position: absolute;*/
-/*  top: 50%;*/
-/*  left: 50%;*/
-/*  transform: translate(-50%, -50%) scale(0.5);*/
+input[type="checkbox"]:checked:before {
+    border-width: 0;
+}
 
-/*  content: '';*/
-/*  z-index: -1;*/
+input[type="checkbox"].file-check:after {
+    color: #ff605f;
+}
 
-/*  transition: all 300ms;*/
-/*  transition-timing-function: cubic-bezier(0.64, 0.04, 0.35, 1);*/
-/*}*/
+input[type="checkbox"].file-all-check:after {
+    color: #ff605f;
+}
 
-/*.circle:hover::before {*/
-/*  transform: translate(-50%, -50%) scale(1);*/
-/*}*/
+input[type="checkbox"].sharing-checkbox:after {
+    color: #0dcaf0;
+}
+
+input[type="checkbox"].revoke-sharing-checkbox:after {
+    color: #ffc107;
+}
+
+input[type="checkbox"]:after {
+    content: "✓";
+    text-align: center;
+    line-height: 1.2em;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.1s ease-in;
+}
+
+input[type="checkbox"]:checked:after {
+    opacity: 1;
+}

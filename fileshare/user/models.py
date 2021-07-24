@@ -9,6 +9,8 @@ from django.contrib.auth.models import (BaseUserManager,
                                         PermissionsMixin)
 
 from fileshare import settings
+from imagekit.models import ImageSpecField
+from imagekit.processors import SmartResize
 
 
 def get_profile_image_filepath(self, filename):
@@ -48,8 +50,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(max_length=50, unique=True,
-                              verbose_name='email address')
+    email = models.EmailField(max_length=50, unique=True, verbose_name='email address')
     name = models.CharField(max_length=255)
     date_birth = models.DateField(verbose_name='birth date', null=True, blank=True)
     about_me = models.CharField(max_length=144, null=True, blank=True, )
@@ -59,6 +60,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     profile_image = models.ImageField(max_length=255, null=True, blank=True,
                                       upload_to=get_profile_image_filepath, default=get_default_profile_image_filepath)
+    profile_image_thumb = ImageSpecField(source='profile_image', processors=[SmartResize(54, 54)], format="PNG")
+    profile_image_detail_thumb = ImageSpecField(source='profile_image', processors=[SmartResize(250, 250)], format="PNG")
 
     objects = UserManager()
 

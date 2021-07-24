@@ -127,7 +127,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# user files
+# user files and caches
 /fileshare/media/profile_images
 /fileshare/media/user_files
+/fileshare/media/CACHE
 /fileshare/media_cdn/temp

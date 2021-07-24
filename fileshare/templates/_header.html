@@ -55,7 +55,7 @@
                            style="color: white">{{ request.user.name }}</b>
                         <img class="user-image rounded-circle" id="profile_link"
                                              data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="button"
-                                             src="{{ request.user.profile_image.url }}" alt="fileshare logo" width="40" height="40">
+                                             src="{{ request.user.profile_image_thumb.url }}" alt="fileshare logo" width="40" height="40">
                         <ul class="dropdown-menu nd-menu" aria-labelledby="profile_link">
                             <li><a class="dropdown-item" href="{% url 'user:account' user_id=request.user.id %}"> Account</a></li>
                             {% if request.user.is_superuser %}
