@@ -7,7 +7,22 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-_No unreleased changes_
+### Added
+- Added `profile picture` to share and revoke sharing
+- Added `thumbnail profile picture` to friends list, friend requests and user search result page
+- Added birth date validation
+
+### Changed
+- Changed checkbox style on my files page
+- Changed Password change form style
+
+### Fixed
+- User cannot see red border on the edge of the not-friend user box on friend list page
+- DoesNotExist error if user has no friend on user search page
+- User email not set to lowercase during registration
+
+### Security
+- Fixed security vulnerability in `validation email` when updating user profile
 
 
 ## [1.1.1] - 2021-07-22

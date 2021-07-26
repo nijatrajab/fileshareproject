@@ -1,7 +1,9 @@
+import datetime
 import os
 import random
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import (BaseUserManager,
@@ -75,6 +77,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return reverse('user:account', kwargs={'user_id': self.pk})
+
+    # def save(self, *args, **kwargs):
+    #     if self.date_birth > datetime.date.today():
+    #         raise ValidationError("Select correct date birth")
+    #     super(User, self).save(*args, *kwargs)
 
     def __str__(self):
         return self.email

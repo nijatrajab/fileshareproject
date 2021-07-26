@@ -1,4 +1,8 @@
+import calendar
+import datetime
+
 from django import forms
+from django.conf import settings
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserChangeForm
 from django.core.exceptions import ValidationError
@@ -11,6 +15,7 @@ from crispy_forms.layout import Layout, HTML, Div, Field, MultiWidgetField
 from crispy_forms.bootstrap import StrictButton, FormActions
 
 from . import models
+from .models import User
 
 
 class UserCreationForm(forms.ModelForm):
@@ -29,6 +34,14 @@ class UserCreationForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise ValidationError("Password doesn't match")
         return password2
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email").lower()
+        try:
+            user = User.objects.exclude(pk=self.instance.pk).get(email=email)
+        except User.DoesNotExist:
+            return email
+        raise forms.ValidationError(f'Email {user} is already in use.')
 
     def _post_clean(self):
         super()._post_clean()
@@ -69,12 +82,22 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UsrChangeForm(UserChangeForm):
-    date_birth = forms.DateField(widget=SelectDateWidget(years=range(1900, 2022), empty_label=("Year", "Month", "Day")),
+    date_birth = forms.DateField(widget=SelectDateWidget(years=range(1900, 2022),
+                                                         empty_label=("Year", "Month", "Day")),
+                                 input_formats=settings.DATE_INPUT_FORMATS,
                                  required=False)
 
     class Meta:
         model = models.User
-        fields = ('id', 'email', 'name', 'profile_image', 'about_me', 'date_birth')
+        fields = ('email', 'name', 'profile_image', 'about_me', 'date_birth')
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email").lower()
+        try:
+            user = User.objects.exclude(pk=self.instance.pk).get(email=email)
+        except User.DoesNotExist:
+            return email
+        raise forms.ValidationError(f'Email {user} is already in use.')
 
     def __init__(self, data, *args, **kwargs):
         initial = kwargs.get("initial", {})
@@ -99,6 +122,16 @@ class UsrChangeForm(UserChangeForm):
                 <button class="btn btn-outline-light">Back profile</button></a>"""),
             ),
         )
+
+    def save(self, commit=True):
+        user = super(UserChangeForm, self).save(commit=False)
+        user.email = self.cleaned_data['email'].lower()
+        user.profile_image = self.cleaned_data['profile_image']
+        user.about_me = self.cleaned_data['about_me']
+        user.date_birth = self.cleaned_data['date_birth']
+        if commit:
+            user.save()
+        return user
 
 
 class LoginForm(AuthenticationForm):
@@ -131,6 +164,9 @@ class PassChangeForm(PasswordChangeForm):
                 'new_password2',
             ),
             FormActions(
-                StrictButton('Change', css_class='btn btn-outline-dark btn-lg', type='submit', id='change_password'),
+                StrictButton('Change password', css_class='btn btn-outline-warning',
+                             type='submit', id='change_password'),
+                HTML("""<a href="{% url 'user:account' user_id=request.user.id %}">
+                        <button type="button" class="btn btn-outline-light">Back profile</button></a>"""),
             ),
         )

@@ -132,3 +132,6 @@ dmypy.json
 /fileshare/media/user_files
 /fileshare/media/CACHE
 /fileshare/media_cdn/temp
+/fileshare/media/user_default_files
+/fileshare/media/user_profile_picture
+/fileshare/create_user.py
