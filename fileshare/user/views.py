@@ -6,6 +6,8 @@ import base64
 from django.conf import settings
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.views import PasswordChangeView, LoginView
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import edit
@@ -42,12 +44,28 @@ class SignUp(edit.CreateView):
         return valid
 
 
-def validate_username(request):
-    """username availability"""
+def validate_email_regex(request):
+    """email availability"""
     email = request.GET.get('email', None)
-    response = {
-        'is_taken': User.objects.filter(email__iexact=email).exists()
-    }
+    user = request.user
+    changed_email = []
+    if User.objects.filter(email__iexact=email).exists():
+        changed_email = User.objects.filter(email__iexact=email)[0]
+
+    try:
+        validate_email(email)
+        if changed_email == user:
+            response = {'is_taken': False}
+        else:
+            response = {
+                'is_taken': User.objects.filter(email__iexact=email).exists(),
+                'message': 'Email is already in use.'
+            }
+    except ValidationError:
+        response = {
+            'is_taken': True,
+            'message': "Enter a valid email address."
+        }
     return JsonResponse(response)
 
 

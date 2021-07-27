@@ -7,10 +7,17 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+_No unreleased changes_
+
+
+## [1.1.2] - 2021-07-27
+
 ### Added
 - Added `profile picture` to share and revoke sharing
 - Added `thumbnail profile picture` to friends list, friend requests and user search result page
-- Added birth date validation
+- Added birth-date validation
+- Added real time email validation to edit profile page
+- Added `regular expression` for email domain name validation
 
 ### Changed
 - Changed checkbox style on my files page
@@ -19,7 +26,8 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - User cannot see red border on the edge of the not-friend user box on friend list page
 - DoesNotExist error if user has no friend on user search page
-- User email not set to lowercase during registration
+- User email not set to lowercase during registration and updating profile
+- User email validation error message does not disappear when checking valid email during registration
 
 ### Security
 - Fixed security vulnerability in `validation email` when updating user profile
@@ -123,7 +131,8 @@ button)
 - Fixed admin page not giving non-staff user 403 message
 
 
-[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.1...HEAD
+[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/nijatrajab/fileshareproject/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/nijatrajab/fileshareproject/releases/tag/v1.0.0

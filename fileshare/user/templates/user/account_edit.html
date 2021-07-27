@@ -37,6 +37,25 @@
         cursor: pointer;
     }
 
+    .email_validation {
+        transition: all 0.5s cubic-bezier(.83, -0.43, .21, 1.42);
+    }
+
+    .valid_email {
+        opacity: 0;
+        top: calc(23.8% + 8em);
+        margin-top: 0;
+        height: 0;
+        visibility: hidden;
+    }
+
+    .invalid_email {
+        opacity: 1;
+        margin-top: 4px;
+        height: 10px;
+        top: calc(23.8% + 6em);
+    }
+
 </style>
 
 <div class="container mt-3">
@@ -116,7 +135,7 @@
                 var imageField = document.getElementById("id_profile_image_display")
                 imageField.src = image
                 cropper = new Cropper(imageField, {
-                    aspectRatio: 1 / 1,
+                    aspectRatio: 1/1,
                     crop(event) {
                         console.log("cropping now")
                         console.log("x: " + event.detail.x)
@@ -292,6 +311,8 @@
 
     }
 
+
+    // Validating date birth
     var yearSelect = document.getElementsByName("date_birth_year")[0],
         monthSelect = document.getElementsByName("date_birth_month")[0],
         daySelect = document.getElementsByName("date_birth_day")[0];
@@ -312,6 +333,51 @@
     }
 
     validate_date();
+
 </script>
 
 {% endblock content %}
+
+{% block extrascripts %}
+
+<script type="text/javascript">
+
+    // Validating email address
+    function validateEmail() {
+        var email_id =  $('#id_email')
+        var save_button = $("#edit_profile")
+        email_id.after('<div class="invalid-feedback email_validation d-block valid_email" ' +
+            'id="emailError">This Email is not valid!</div>');
+        var email_error = $('#emailError')
+        // catch the form's submit event
+        email_id.keyup(function () {
+            // create an AJAX call
+            $.ajax({
+                data: $(this).serialize(), // get the form data
+                url: "{% url 'user:validate_email' %}",
+                // on success
+                success: function (response) {
+                    if (response.is_taken == true) {
+                        save_button.prop("disabled", true);
+                        email_id.removeClass('is-valid').addClass('is-invalid');
+                        email_error.text(response.message);
+                        email_error.removeClass("valid_email").addClass("invalid_email");
+                    } else {
+                        save_button.removeAttr("disabled");
+                        email_id.removeClass('is-invalid').addClass('is-valid');
+                        email_error.removeClass("invalid_email").addClass("valid_email");
+                    }
+                },
+                // on error
+                error: function (response) {
+                    // alert the error if any error occurred
+                    console.log("Something went wrong: " + response)
+                }
+            });
+            return false;
+        });
+    }
+    validateEmail();
+</script>
+
+{% endblock extrascripts %}

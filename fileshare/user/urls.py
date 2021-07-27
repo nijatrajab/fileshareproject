@@ -10,7 +10,7 @@ urlpatterns = [
     path('', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('login/', views.LgnView.as_view(), name='login'),
     path('signup/', views.SignUp.as_view(), name='signup'),
-    path('validate_username/', views.validate_username, name='validate_username'),
+    path('validate_email/', views.validate_email_regex, name='validate_email'),
 
     # password urls
     path('password_change/done/',

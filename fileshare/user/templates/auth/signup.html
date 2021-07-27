@@ -3,6 +3,28 @@
 {% crispy form form.helper %}
 
 {% block content %}
+
+<style type="text/css">
+    .email_validation {
+        transition: all 0.5s cubic-bezier(.83, -0.43, .21, 1.42);
+    }
+
+    .valid_email {
+        opacity: 0;
+        top: calc(23.8% + 8em);
+        margin-top: 0;
+        height: 0;
+        visibility: hidden;
+    }
+
+    .invalid_email {
+        opacity: 1;
+        margin-top: 4px;
+        height: 10px;
+        top: calc(23.8% + 6em);
+    }
+</style>
+
 <div class="container mt-3">
     <div class="row">
         <div class="col">
@@ -21,6 +43,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -29,35 +52,38 @@
 {% block extrascripts %}
 <script type="text/javascript">
 
-    // Username validation handler
+    // Email validation handler
     $(document).ready(function () {
+        var email_id =  $('#id_email')
+        var signup_button = $("#signup")
+        email_id.after('<div class="invalid-feedback email_validation d-block valid_email" ' +
+            'id="emailError">This Email is not valid!</div>');
+        var email_error = $('#emailError')
         // catch the form's submit event
-        $('#id_email').keyup(function () {
+        email_id.keyup(function () {
             // create an AJAX call
             $.ajax({
                 data: $(this).serialize(), // get the form data
-                url: "{% url 'user:validate_username' %}",
+                url: "{% url 'user:validate_email' %}",
                 // on success
                 success: function (response) {
                     if (response.is_taken == true) {
-                        $("#signup").prop("disabled", true);
-                        $('#id_email').removeClass('is-valid').addClass('is-invalid');
-                        $('#id_email').after('<div class="invalid-feedback d-block" id="usernameError">This email is not available!</div>')
+                        signup_button.prop("disabled", true);
+                        email_id.removeClass('is-valid').addClass('is-invalid');
+                        email_error.text(response.message);
+                        email_error.removeClass("valid_email").addClass("invalid_email");
                     } else {
-                        $("#signup").removeAttr("disabled");
-                        $('#id_email').removeClass('is-invalid').addClass('is-valid');
-                        $('#usernameError').remove();
-
+                        signup_button.removeAttr("disabled");
+                        email_id.removeClass('is-invalid').addClass('is-valid');
+                        email_error.removeClass("invalid_email").addClass("valid_email");
                     }
-
                 },
                 // on error
                 error: function (response) {
-                    // alert the error if any error occured
-                    console.log(response.responseJSON.errors)
+                    // alert the error if any error occurred
+                    console.log("Something went wrong: " + response)
                 }
             });
-
             return false;
         });
     })
