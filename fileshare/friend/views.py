@@ -36,7 +36,6 @@ def friend_list_view(request, *args, **kwargs):
     return render(request, "friend/friend_list.html", context)
 
 
-
 def friend_requests_view(request, *args, **kwargs):
     context = {}
     user = request.user

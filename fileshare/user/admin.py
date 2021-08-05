@@ -42,35 +42,24 @@ class UserAdminPermissions(GuardedModelAdmin):
 
 
 class FriendListAdminPermissions(GuardedModelAdmin):
-    list_display = ['user',]
-    search_fields = ['user',]
+    list_display = ['user', ]
+    search_fields = ['user', ]
     ordering = ()
-    readonly_fields = ['user',]
+    readonly_fields = ['user', ]
     filter_horizontal = ()
-    list_filter = ['user',]
-    # fieldsets = ((None, {'fields': ('email', 'password')}),
-    #              (_('Personal info'), {'fields': ('name', 'about_me', 'date_birth', 'profile_image')}),
-    #              (_('Permissions'),
-    #               {'fields': ('is_active', 'is_staff',
-    #                           'is_superuser')}),
-    #              (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
-    #              )
+    list_filter = ['user', ]
+    fieldsets = [(_('Friend list'), {'fields': ('user', 'friends')})]
 
 
 class FriendRequestAdminPermissions(GuardedModelAdmin):
     list_display = ('sender', 'receiver')
     search_fields = ('sender__email', 'sender__name', 'receiver__email', 'receiver__name')
     ordering = ()
-    # readonly_fields = ('id', 'date_joined', 'last_login')
+    readonly_fields = ('timestamp',)
     filter_horizontal = ()
     list_filter = ('sender', 'receiver')
-    # fieldsets = ((None, {'fields': ('email', 'password')}),
-    #              (_('Personal info'), {'fields': ('name', 'about_me', 'date_birth', 'profile_image')}),
-    #              (_('Permissions'),
-    #               {'fields': ('is_active', 'is_staff',
-    #                           'is_superuser')}),
-    #              (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
-    #              )
+    fieldsets = [(_('Friend request'), {'fields': ('sender', 'receiver', 'is_active')}),
+                 (_('Important dates'), {'fields': ('timestamp',)})]
 
 
 fileshare_site = FileShareAdminArea(name='FileShareAdmin')

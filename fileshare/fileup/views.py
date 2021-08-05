@@ -1,8 +1,8 @@
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.generic import list, detail, edit, View
 from guardian.mixins import PermissionRequiredMixin, PermissionListMixin, LoginRequiredMixin
-from guardian.shortcuts import assign_perm, remove_perm
+from guardian.shortcuts import assign_perm, remove_perm, get_objects_for_user, get_users_with_perms
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
@@ -14,6 +14,8 @@ from .mixins import ShareMixin
 from user.models import User
 
 from .forms import FileModelForm
+from friend.models import FriendList
+
 
 
 class FileListView(PermissionListMixin, list.ListView):
@@ -153,4 +155,3 @@ def revoke_access(request, id):
         messages.error(request, f"You must choose user to revoke permission to view {obj.title}.")
 
     return redirect(reverse('fileup:list'))
-

@@ -135,3 +135,4 @@ dmypy.json
 /fileshare/media/user_default_files
 /fileshare/media/user_profile_picture
 /fileshare/create_user.py
+/fileshare/fileup/templates/fileup/myfile.html

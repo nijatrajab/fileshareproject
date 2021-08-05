@@ -9,6 +9,8 @@ from guardian.shortcuts import get_users_with_perms
 from fileshare.middleware import get_current_user
 from user.models import User
 
+from friend.models import FriendList
+
 
 def user_directory_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -67,7 +69,8 @@ class UserFile(models.Model):
         users_with_perms = get_users_with_perms(
             self, only_with_perms_in=['view_userfile'], with_superusers=True
         )
-        users_to_share = [user for user in User.objects.all()
+        friends = FriendList.objects.get(user=self.uploaded_by).friends.all()
+        users_to_share = [user for user in friends
                           if user not in users_with_perms]
         return users_to_share
 

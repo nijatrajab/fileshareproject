@@ -48,13 +48,13 @@ def validate_email_regex(request):
     """email availability"""
     email = request.GET.get('email', None)
     user = request.user
-    changed_email = []
+    exist_email = []
     if User.objects.filter(email__iexact=email).exists():
-        changed_email = User.objects.filter(email__iexact=email)[0]
+        exist_email = User.objects.filter(email__iexact=email)[0]
 
     try:
         validate_email(email)
-        if changed_email == user:
+        if exist_email == user:
             response = {'is_taken': False}
         else:
             response = {
