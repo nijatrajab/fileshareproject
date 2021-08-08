@@ -10,6 +10,7 @@ from django.contrib.auth.models import (BaseUserManager,
                                         AbstractBaseUser,
                                         PermissionsMixin)
 
+
 from fileshare import settings
 from imagekit.models import ImageSpecField
 from imagekit.processors import SmartResize
@@ -63,7 +64,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     profile_image = models.ImageField(max_length=255, null=True, blank=True,
                                       upload_to=get_profile_image_filepath, default=get_default_profile_image_filepath)
     profile_image_thumb = ImageSpecField(source='profile_image', processors=[SmartResize(54, 54)], format="PNG")
-    profile_image_detail_thumb = ImageSpecField(source='profile_image', processors=[SmartResize(250, 250)], format="PNG")
+    profile_image_detail_thumb = ImageSpecField(source='profile_image', processors=[SmartResize(250, 250)],
+                                                format="PNG")
 
     objects = UserManager()
 
@@ -85,3 +87,22 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+from guardian.models import UserObjectPermissionAbstract
+from guardian.utils import get_user_obj_perms_model
+
+
+class BigUserObjectPermission(UserObjectPermissionAbstract):
+    id = models.BigAutoField(editable=False, unique=True, primary_key=True)
+    timestamp = models.DateTimeField(auto_now=True)
+
+    class Meta(UserObjectPermissionAbstract.Meta):
+        abstract = False
+        indexes = [
+            *UserObjectPermissionAbstract.Meta.indexes,
+            models.Index(fields=['content_type', 'object_pk', 'user']),
+        ]
+
+
+UserObjectPermission = get_user_obj_perms_model()

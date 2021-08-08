@@ -17,14 +17,65 @@ from .forms import FileModelForm
 from friend.models import FriendList
 
 
+def user_file(request, *args, **kwargs):
+    context = {}
+    user = request.user
+    user_id = kwargs.get("user_id")
 
-class FileListView(PermissionListMixin, list.ListView):
-    model = UserFile
+    if user.is_authenticated:
+        try:
+            account = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return HttpResponse("That user doesn't exist.")
 
-    template_name = 'fileup/ownfiles.html'
-    permission_required = ['fileup.view_userfile', 'fileup.delete_userfile']
-    permission_denied_message = 'You have not permission to see this'
-    context_object_name = 'files'
+        if account:
+            context['id'] = account.id
+            context['email'] = account.email
+            context['name'] = account.name
+            context['profile_image'] = account.profile_image.url
+            context['date_birth'] = account.date_birth
+            context['about_me'] = account.about_me
+
+            try:
+                friend_list = FriendList.objects.get(user=account)
+            except FriendList.DoesNotExist:
+                friend_list = FriendList(user=account)
+                friend_list.save()
+            friends = friend_list.friends.all()
+            context['friends'] = friends
+
+            is_self = True
+            is_friend = False
+            files = UserFile.objects.filter(uploaded_by=account)
+
+            if user.is_authenticated and user != account:
+                is_self = False
+                if friends.filter(pk=user.id):
+                    is_friend = True
+                    files = get_objects_for_user(user, 'fileup.view_userfile').filter(uploaded_by=account)
+                else:
+                    is_friend = False
+                    return redirect("user:account", user_id=account.id)
+
+            elif not user.is_authenticated:
+                is_self = False
+
+            context['is_self'] = is_self
+            context['is_friend'] = is_friend
+            context['files'] = files
+
+            return render(request, "fileup/myfile.html", context)
+    else:
+        return redirect("user:login")
+
+
+# class FileListView(PermissionListMixin, list.ListView):
+#     model = UserFile
+#
+#     template_name = 'fileup/ownfiles.html'
+#     permission_required = ['fileup.view_userfile', 'fileup.delete_userfile']
+#     permission_denied_message = 'You have not permission to see this'
+#     context_object_name = 'files'
 
 
 class FileSharedListView(PermissionListMixin, ShareMixin, list.ListView):
@@ -43,14 +94,13 @@ class FileUploadView(LoginRequiredMixin, SuccessMessageMixin, edit.CreateView):
     template_name = 'fileup/file_upload.html'
     permission_denied_message = 'You have not permission to see this'
     success_message = 'File named %(title)s has been uploaded'
-    success_url = reverse_lazy('fileup:list')
 
     def form_valid(self, *args, **kwargs):
-        file = super().form_valid(*args, **kwargs)
+        super().form_valid(*args, **kwargs)
         assign_perm('fileup.view_userfile', self.request.user, self.object)
         assign_perm('fileup.change_userfile', self.request.user, self.object)
         assign_perm('fileup.delete_userfile', self.request.user, self.object)
-        return file
+        return redirect(reverse('fileup:filelist', kwargs={'user_id': self.request.user.pk}))
 
 
 class FileUpdateView(PermissionRequiredMixin, SuccessMessageMixin, edit.UpdateView):
@@ -62,12 +112,11 @@ class FileUpdateView(PermissionRequiredMixin, SuccessMessageMixin, edit.UpdateVi
     permission_denied_message = 'You have not permission to see this'
     return_403 = True
     info_message = 'File was updated.'
-    success_url = reverse_lazy('fileup:list')
 
     def form_valid(self, *args, **kwargs):
-        new_file = super().form_valid(*args, **kwargs)
+        super().form_valid(*args, **kwargs)
         messages.info(self.request, self.info_message)
-        return new_file
+        return redirect(reverse('fileup:filelist', kwargs={'user_id': self.request.user.pk}))
 
 
 class FileDetailView(PermissionRequiredMixin, detail.DetailView):
@@ -87,11 +136,11 @@ class FileDeleteView(PermissionRequiredMixin, SuccessMessageMixin, edit.DeleteVi
     permission_denied_message = 'You have not permission to see this'
     return_403 = True
     success_message = 'File was deleted.'
-    success_url = reverse_lazy('fileup:list')
 
     def delete(self, request, *args, **kwargs):
         messages.warning(self.request, self.success_message)
-        return super(FileDeleteView, self).delete(request, *args, **kwargs)
+        super(FileDeleteView, self).delete(request, *args, **kwargs)
+        return redirect(reverse('fileup:filelist', kwargs={'user_id': self.request.user.pk}))
 
 
 class BulkDeleteView(View):
@@ -109,7 +158,7 @@ class BulkDeleteView(View):
         else:
             messages.error(request, 'Something bad happened!')
 
-        return redirect('fileup:list')
+        return redirect(reverse('fileup:filelist', kwargs={'user_id': self.request.user.pk}))
 
 
 class AdminPage(PermissionRequiredMixin, list.ListView):
@@ -135,7 +184,7 @@ def share_file(request, id):
     success_name = ', '.join(str(u.name) for u in usobjs)
     messages.success(request, f'Your have shared {obj.title} with {success_name}.')
     assign_perm('fileup.view_userfile', usobjs, obj)
-    return redirect(reverse('fileup:list'))
+    return redirect(reverse('fileup:filelist', kwargs={'user_id': request.user.pk}))
 
 
 @login_required()
@@ -154,4 +203,4 @@ def revoke_access(request, id):
     else:
         messages.error(request, f"You must choose user to revoke permission to view {obj.title}.")
 
-    return redirect(reverse('fileup:list'))
+    return redirect(reverse('fileup:filelist', kwargs={'user_id': request.user.pk}))

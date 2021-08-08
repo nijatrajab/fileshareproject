@@ -1,9 +1,12 @@
 import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from guardian.shortcuts import remove_perm
 
 from user.models import User
 from friend.models import FriendRequest, FriendList
+
+from fileup.models import UserFile
 
 
 def friend_list_view(request, *args, **kwargs):
@@ -121,7 +124,22 @@ def remove_friend(request, *args, **kwargs):
             try:
                 removee = User.objects.get(pk=user_id)
                 friend_list = FriendList.objects.get(user=user)
+
+                removee_objs = UserFile.objects.filter(uploaded_by=removee)
+
+                remover = User.objects.get(pk=user.pk)
+                remover_objs = UserFile.objects.filter(uploaded_by=remover)
+
+                for e_obj in removee_objs:
+                    remove_perm('view_userfile', remover, e_obj)
+
+                for r_obj in remover_objs:
+                    remove_perm('view_userfile', removee, r_obj)
+
                 friend_list.unfriend(removee)
+
+
+
                 payload['response'] = "Successfully removed that friend."
             except Exception as e:
                 payload['response'] = f"Something went wrong: {str(e)}"

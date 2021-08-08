@@ -145,6 +145,17 @@
                                     </a>
                                 </div>
 
+                                <!-- File list link -->
+                                <div class="d-flex flex-column pt-4">
+                                    <a href="{% url 'fileup:filelist' user_id=id %}">
+                                        <div class="d-flex flex-row align-items-center justify-content-center">
+                                            <button class="btn btn-outline-info">
+                                                <i class="far fa-file"></i> Files
+                                            </button>
+                                        </div>
+                                    </a>
+                                </div>
+
                             </div>
 
                             {% if friend_requests %}

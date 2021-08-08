@@ -4,8 +4,8 @@ from . import views
 app_name = 'fileup'
 
 urlpatterns = [
-    path('', views.FileListView.as_view(), name='list'),
-    # path('file/<user_id>/', views.user_file, name='filelist'),
+    # path('', views.FileListView.as_view(), name='list'),
+    path('file/<user_id>/', views.user_file, name='filelist'),
     path('upload/', views.FileUploadView.as_view(), name='upload'),
     path('detail/<int:pk>/', views.FileDetailView.as_view(), name='detail'),
     path('delete/<int:pk>/', views.FileDeleteView.as_view(), name='delete'),

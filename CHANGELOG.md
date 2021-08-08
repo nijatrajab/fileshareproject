@@ -7,7 +7,15 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-_No unreleased changes_
+### Added
+- Added `timestamp` for file sharing with your friend
+- Added `files list` to account page
+- Added `shared date` to my files page
+- Added the ability to see the file your friend shared with you
+
+### Changed
+- The `friendly system` has been activated for `file uploads`
+- When you cancel a friendship, file sharing between both users will be deleted
 
 
 ## [1.1.2] - 2021-07-27

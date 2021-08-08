@@ -61,7 +61,7 @@
                             {% if request.user.is_superuser %}
                                 <li><a class="dropdown-item" href="{% url 'fileup:adminpage' %}"> Admin</a></li>
                             {% else %}
-                                <li><a class="dropdown-item" href="{% url 'fileup:list' %}"> My Files </a></li>
+                                <li><a class="dropdown-item" href="{% url 'fileup:filelist' user_id=request.user.id %}"> My Files </a></li>
                                 <li><a class="dropdown-item" href="{% url 'fileup:shared' %}"> Shared with me</a></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="{% url 'user:logout' %}"> Logout</a></li>

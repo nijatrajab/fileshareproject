@@ -18,10 +18,11 @@
                                                class="table table-bordered table-dark table-hover">
                                             <thead>
                                             <tr class="ownfiles">
-                                                <th style="width: 1%"></th>
+                                                <th style="width: 1%"><i class="far fa-file"></i></th>
                                                 <th style="width: 50%">File name</th>
                                                 <th>Uploader</th>
                                                 <th>Upload date</th>
+                                                <th>Sharing date</th>
                                                 <th style="width: 1%; text-align: center">Download</th>
                                             </tr>
                                             </thead>
@@ -52,6 +53,16 @@
                                                         url="{% url 'fileup:detail' object.pk %}"
                                                         style="cursor: pointer;">
                                                         {{ object.uploaded_at|naturaltime }}
+                                                    </td>
+
+                                                    <td class="md-modal fl-list" id="md-{{ object.pk }}"
+                                                        url="{% url 'fileup:detail' object.pk %}"
+                                                        style="cursor: pointer;">
+                                                        {% for k, v in object.users_with_perms.items %}
+                                                            {% if k == request.user %}
+                                                                {{v|naturaltime}}
+                                                            {% endif %}
+                                                        {% endfor %}
                                                     </td>
 
                                                     <td style="text-align: center">

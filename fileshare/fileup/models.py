@@ -11,6 +11,8 @@ from user.models import User
 
 from friend.models import FriendList
 
+from fileup.utils import get_users_timestamp_with_perms
+
 
 def user_directory_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -60,10 +62,10 @@ class UserFile(models.Model):
         return extension[1:]
 
     def users_with_perms(self):
-        users_with_perms = get_users_with_perms(
+        users_with_perms = get_users_timestamp_with_perms(
             self, only_with_perms_in=['view_userfile']
         )
-        return [i for i in users_with_perms if i != self.uploaded_by]
+        return {i: j for (i, j) in users_with_perms.items() if i != self.uploaded_by}
 
     def users_to_share(self):
         users_with_perms = get_users_with_perms(
