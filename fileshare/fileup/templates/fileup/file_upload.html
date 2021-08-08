@@ -3,13 +3,14 @@
 <div id="file_upload">
     <div class="modal fade" tabindex="-1" role="dialog" id="uploadmodal" aria-hidden="true">
         <div class="modal-dialog mt-5" role="document">
-            <div class="modal-content">
+            <div class="modal-content bg-dark text-white">
                 <form method="post" action="{% url 'fileup:upload' %}" enctype=multipart/form-data>
                     {% csrf_token %}
 
                     <div class="modal-header">
                         <h3 class="modal-title">File Upload</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -35,7 +36,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-outline-dark">Upload</button>
+                        <button type="submit" class="btn btn-outline-light">Upload</button>
                     </div>
 
                 </form>

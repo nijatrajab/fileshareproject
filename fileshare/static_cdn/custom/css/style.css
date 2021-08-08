@@ -362,7 +362,7 @@ body {
     }
 }
 
-/*Checkbox on ownfiles page*/
+/*Checkbox on myfiles page*/
 input[type="checkbox"] {
     visibility: hidden;
     position: relative;

@@ -7,6 +7,11 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+_No unreleased changes_
+
+
+## [1.2.0] - 2021-08-08
+
 ### Added
 - Added `timestamp` for file sharing with your friend
 - Added `files list` to account page
@@ -16,6 +21,7 @@ Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - The `friendly system` has been activated for `file uploads`
 - When you cancel a friendship, file sharing between both users will be deleted
+- Theme of modals changed to dark
 
 
 ## [1.1.2] - 2021-07-27
@@ -139,7 +145,8 @@ button)
 - Fixed admin page not giving non-staff user 403 message
 
 
-[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.2...HEAD
+[Unreleased]: https://github.com/nijatrajab/fileshareproject/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.2...v1.2.0
 [1.1.2]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/nijatrajab/fileshareproject/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/nijatrajab/fileshareproject/compare/v1.0.0...v1.1.0

@@ -2,13 +2,14 @@
 <div id="file_update">
     <div class="modal fade" tabindex="-1" role="dialog" id="updatemodal" aria-hidden="true">
         <div class="modal-dialog mt-5" role="document">
-            <div class="modal-content">
+            <div class="modal-content bg-dark text-white">
                 <form method="POST" action="{% url 'fileup:update' object.pk %}" enctype=multipart/form-data id="updateaction">
                     {% csrf_token %}
 
                     <div class="modal-header">
                         <h3 class="modal-title">File Update</h3>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -34,7 +35,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-outline-dark">Update</button>
+                        <button type="submit" class="btn btn-outline-light">Update</button>
                     </div>
 
                 </form>
