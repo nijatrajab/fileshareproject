@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import redirect, render
 from django.views.generic import list, detail, edit, View
@@ -15,6 +17,8 @@ from user.models import User
 
 from .forms import FileModelForm
 from friend.models import FriendList
+
+from permission.models import BigUserObjectPermission
 
 
 def user_file(request, *args, **kwargs):
@@ -181,9 +185,15 @@ def share_file(request, id):
     usids = request.POST.getlist('user_id')
     usobjs = User.objects.filter(id__in=usids)
     obj = UserFile.objects.get(id=id)
+    permission = 'fileup.view_userfile'
+
+    n = BigUserObjectPermission()
+    n.access_notification(other_users=usobjs, file=obj)
+    assign_perm(permission, usobjs, obj)
+
     success_name = ', '.join(str(u.name) for u in usobjs)
     messages.success(request, f'Your have shared {obj.title} with {success_name}.')
-    assign_perm('fileup.view_userfile', usobjs, obj)
+    # assign_perm('fileup.view_userfile', usobjs, obj)
     return redirect(reverse('fileup:filelist', kwargs={'user_id': request.user.pk}))
 
 

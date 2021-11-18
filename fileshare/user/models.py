@@ -3,17 +3,22 @@ import os
 import random
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import (BaseUserManager,
                                         AbstractBaseUser,
                                         PermissionsMixin)
-
-
-from fileshare import settings
+from guardian.shortcuts import assign_perm
 from imagekit.models import ImageSpecField
 from imagekit.processors import SmartResize
+
+from friend.models import FriendList
+from notification.models import Notification
 
 
 def get_profile_image_filepath(self, filename):
@@ -89,20 +94,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-from guardian.models import UserObjectPermissionAbstract
-from guardian.utils import get_user_obj_perms_model
-
-
-class BigUserObjectPermission(UserObjectPermissionAbstract):
-    id = models.BigAutoField(editable=False, unique=True, primary_key=True)
-    timestamp = models.DateTimeField(auto_now=True)
-
-    class Meta(UserObjectPermissionAbstract.Meta):
-        abstract = False
-        indexes = [
-            *UserObjectPermissionAbstract.Meta.indexes,
-            models.Index(fields=['content_type', 'object_pk', 'user']),
-        ]
-
-
-UserObjectPermission = get_user_obj_perms_model()
+@receiver(post_save, sender=User)
+def user_save(sender, instance, **kwargs):
+    FriendList.objects.get_or_create(user=instance)

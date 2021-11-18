@@ -1,0 +1,9 @@
+{
+  "name": "non-root-bundle",
+  "version": "0.0.0",
+  "private": "true",
+  "dependencies": {
+    "montage": "*"
+  },
+  "bundle": ["sub/x"]
+}

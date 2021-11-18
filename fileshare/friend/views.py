@@ -138,8 +138,6 @@ def remove_friend(request, *args, **kwargs):
 
                 friend_list.unfriend(removee)
 
-
-
                 payload['response'] = "Successfully removed that friend."
             except Exception as e:
                 payload['response'] = f"Something went wrong: {str(e)}"

@@ -53,9 +53,10 @@ def get_users_timestamp_with_perms(obj, attach_perms=False, with_superusers=Fals
 
         users = {}
         for user in get_user_model().objects.filter(qset).distinct():
+            permission = Permission.objects.get(codename='view_userfile')
             guardian_object = model.objects.get(user=user,
                                                 object_pk=obj.pk,
-                                                permission=40)
+                                                permission=permission)
             users[user] = guardian_object.timestamp
         return users
     else:

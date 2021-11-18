@@ -238,6 +238,10 @@
                             <a href="{% url 'user:account' user_id=friend.0.id %}">
                                 <button class="btn btn-outline-light">Go to profile</button>
                             </a>
+
+                            <button class="btn btn-outline-info"
+                                    onclick="createOrReturnPrivateChat('{{friend.0.id}}')">Message</button>
+
                         </div>
                     </div>
                 </div>
@@ -258,6 +262,7 @@
     </div>
 </div>
 
+{% include 'chat/snippets/create_or_return_chat.html' %}
 {% endblock %}
 
 {% block extrascripts %}

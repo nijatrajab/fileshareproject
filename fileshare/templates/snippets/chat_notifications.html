@@ -1,0 +1,430 @@
+{% load static %}
+
+<style type="text/css">
+	.notification-thumbnail-image{
+		height: 50px;
+		width: 50px;
+	}
+	.chat-card:hover{
+		cursor: pointer;
+		background: #f2f2f2;
+	}
+	.chat-card{
+		border-bottom: 1px solid var(--main-background-color);
+	}
+	.timestamp-text{
+		color: var(--secondary-text-color);
+	}
+	.notification-chatroom-msg{
+		color: var(--light-primary-text-color);
+	}
+	#id_notifications_loading_spinner{
+		position: absolute;
+		margin-top: 40px;
+	}
+	.chat-dropdown-header:hover{
+		cursor: pointer;
+		background: var(--main-background-color);
+	}
+	.chat-dropdown-header{
+		color: var(--light-primary-text-color);
+	}
+</style>
+
+<p class="d-none" id="id_chat_newest_timestamp"></p>
+<p class="d-none" id="id_chat_page_number">1</p>
+
+<script src="{% static 'assets/collections/collections.min.js' %}"></script>
+
+<script type="text/javascript">
+
+    setOnChatNotificationScrollListener()
+    onChatNotificationsPaginationTriggerListener()
+
+    const CHAT_NOTIFICATION_INTERVAL = 4000
+
+    var chatCachedNotifList = new List([])
+
+    function setChatPageNumber(pageNumber){
+        document.getElementById("id_chat_page_number").innerHTML = pageNumber
+    }
+
+    function setChatPaginationExhausted(){
+        setChatPageNumber("-1")
+    }
+
+    function refreshUnreadChatRoomMessagesCard(card, notification){
+        card.childNodes.forEach(function (element){
+            if(element.id == ("id_chat_div1_" + notification['notification_id'])){
+                element.childNodes.forEach(function (child){
+                    if(child.id == ("id_chat_div2_" + notification['notification_id'])){
+                        child.childNodes.forEach(function (nextChild){
+                            if(nextChild.id == ("id_chat_title_" + notification['notification_id'])){
+                                nextChild.innerHTML = notification['from']['title']
+                            }
+                            if(nextChild.id == ("id_chat_message_" + notification['notification_id'])){
+                                if(notification['verb'].length > 50){
+                                    nextChild.innerHTML = notification['verb'].slice(0, 50) + "..."
+                                }
+                                else{
+                                    nextChild.innerHTML = notification['verb']
+                                }
+                            }
+                        })
+                    }
+                })
+            }
+            if(element.id == ("id_timestamp_" + notification['notification_id'])){
+                        element.innerHTML = notification['natural_timestamp']}
+        })
+    }
+
+    function refreshChatNotificationsList(notification){
+        notificationContainer = document.getElementById("id_chat_notifications_container")
+        if(notificationContainer != null){
+            divs = notificationContainer.childNodes
+            divs.forEach(function (card){
+                if(card.id == ("id_notification_" + notification['notification_id'])){
+                    if(notification['notification_type'] == "UnreadChatRoomMessages"){
+                        refreshUnreadChatRoomMessagesCard(card, notification)
+                    }
+                }
+            })
+        }
+    }
+
+    function handleNewChatNotificationsData(notifications){
+        if(notifications.length > 0){
+            clearNoChatNotificationsCard()
+            notifications.forEach(notification => {
+                submitNewChatNotificationToCache(notification)
+                setChatNewestTimestamp(notification['timestamp'])
+            })
+        }
+    }
+
+    function handleChatNotificationsData(notifications, new_page_number){
+        if(notifications.length > 0){
+            clearNoChatNotificationsCard()
+            notifications.forEach(notification => {
+                submitChatNotificationToCache(notification)
+                setChatNewestTimestamp(notification['timestamp'])
+            })
+            setChatPageNumber(new_page_number)
+        }
+    }
+
+    function submitNewChatNotificationToCache(notification){
+        var result = chatCachedNotifList.filter(function (n){
+            return n['notification_id'] === notification['notification_id']
+        })
+        if(result.length == 0){
+            chatCachedNotifList.push(notification)
+            appendTopChatNotification(notification)
+        }
+        else{
+            refreshChatNotificationsList(notification)
+        }
+    }
+
+    function submitChatNotificationToCache(notification){
+        var result = chatCachedNotifList.filter(function (n){
+            return n['notification_id'] === notification['notification_id']
+        })
+        if(result.length == 0){
+            chatCachedNotifList.push(notification)
+            appendBottomChatNotification(notification)
+        }
+        else{
+            refreshChatNotificationsList(notification)
+        }
+    }
+
+    function setChatNewestTimestamp(timestamp){
+        element = document.getElementById("id_chat_newest_timestamp")
+        current = element.innerHTML
+        if(Date.parse(timestamp) > Date.parse(current)){
+            element.innerHTML = timestamp
+        }
+        else if(current == "" || current == "undefined" || current == null){
+            element.innerHTML = timestamp
+        }
+    }
+
+    function onChatNotificationsPaginationTriggerListener(){
+		window.onscroll = function(ev) {
+			// because of rounding we need to add 2. 1 might be OK but I'm using 2.
+			if ((window.innerHeight + window.scrollY + 2) >= document.body.scrollHeight) {
+				getNextChatNotificationsPage()
+			}
+		};
+	}
+
+    function setOnChatNotificationScrollListener(){
+        var menu = document.getElementById("id_chat_notifications_container")
+        if(menu != null){
+            menu.addEventListener("scroll", function (e){
+                if((menu.scrollTop) >= (menu.scrollHeight - menu.offsetHeight)){
+                    getNextChatNotificationsPage()
+                }
+            })
+        }
+    }
+
+    function setChatNotificationsCount(count){
+        var countElement = document.getElementById("id_chat_notifications_count")
+        if(count > 0){
+            countElement.classList.remove("d-none")
+            countElement.innerHTML = count
+        }
+        else {
+            countElement.classList.add("d-none")
+        }
+    }
+
+    function clearNoChatNotificationsCard(){
+        var element = document.getElementById("id_no_chat_notifications")
+        if(element != null && element != "undefined"){
+            document.getElementById("id_chat_notifications_container").removeChild(element)
+        }
+    }
+
+    function setupChatNotificationsMenu(){
+        var notificationContainer = document.getElementById("id_chat_notifications_container")
+        if(notificationContainer != null){
+            setupChatDropdownHeader()
+
+            card = createChatNotificationCard("id_no_chat_notifications")
+
+            var div = document.createElement("div")
+            div.classList.add("d-flex", "flex-row", "align-items-start")
+
+            span = document.createElement("span")
+            span.classList.add("align-items-start", "pt-1", "m-auto")
+            span.innerHTML = "You have no notifications."
+            div.appendChild(span)
+            card.appendChild(div)
+            notificationContainer.appendChild(card)
+
+            setChatNotificationsCount([])
+        }
+    }
+
+    function createChatNotificationCard(cardId){
+        var card = document.createElement("div")
+        if(cardId != "undefined"){
+            card.id = cardId
+        }
+        card.classList.add("d-flex", "flex-column", "align-items-start", "chat-card", "p-4")
+        return card
+    }
+
+    function createChatProfileImageThumbnail(notification){
+        var img = document.createElement("img")
+        img.classList.add("notification-thumbnail-image", "img-fluid", "rounded-circle", "mr-2")
+        img.src = "{% static 'images/fs_default/default_profile_image.png' %}"
+        img.id = assignChatImgId(notification['notification_id'])
+        return img
+    }
+
+    function createChatTimestampElement(notification){
+        var timestamp = document.createElement("p")
+        timestamp.classList.add("small", "pt-2", "timestamp-text")
+        timestamp.innerHTML = notification['natural_timestamp']
+        timestamp.id = assignChatTimestampId(notification)
+        return timestamp
+    }
+
+    function createUnreadChatRoomMessagesElement(notification){
+        card = createChatNotificationCard()
+        card.id = assignChatCardId(notification)
+        card.addEventListener("click", function (){
+            chatRedirect(notification['actions']['redirect_url'])
+        })
+
+        var div1 = document.createElement("div")
+        div1.classList.add("d-flex", "flex-row", "align-items-start")
+        div1.id = assignChatDiv1Id(notification)
+
+        img = createChatProfileImageThumbnail(notification)
+        img.id = assignChatImgId(notification)
+        div1.appendChild(img)
+
+        var div2 = document.createElement("div")
+        div2.classList.add("d-flex", "flex-column")
+        div2.id = assignChatDiv2Id(notification)
+
+        var title = document.createElement("span")
+        title.classList.add("align-items-start")
+        title.innerHTML = notification['from']['title']
+        title.id = assignChatTitleId(notification)
+        div2.appendChild(title)
+
+        var chatRoomMessage = document.createElement("span")
+        chatRoomMessage.id = assignChatroomMessageId(notification)
+        chatRoomMessage.classList.add("align-items-start", "pt-1", "small", "notification-chatroom-msg")
+        if(notification['verb'].length > 50){
+            chatRoomMessage.innerHTML = notification['verb'].slice(0, 50) + "..."
+        }
+        else{
+            chatRoomMessage.innerHTML = notification['verb']
+        }
+        div2.appendChild(chatRoomMessage)
+        div1.appendChild(div2)
+        card.appendChild(div1)
+        card.appendChild(createChatTimestampElement(notification))
+        return card
+    }
+
+    function appendTopChatNotification(notification){
+        switch (notification['notification_type']){
+            case "UnreadChatRoomMessages":
+                chatNotificationContainer = document.getElementById("id_chat_notifications_container")
+                card = createUnreadChatRoomMessagesElement(notification)
+
+                if(chatNotificationContainer.childNodes.length > 2){
+                    var index = 2
+                    chatNotificationContainer.insertBefore(card, chatNotificationContainer.childNodes[index])
+                }
+                else{
+                    chatNotificationContainer.appendChild(card)
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    function appendBottomChatNotification(notification){
+        switch (notification['notification_type']){
+            case "UnreadChatRoomMessages":
+                chatNotificationContainer = document.getElementById("id_chat_notifications_container")
+                card = createUnreadChatRoomMessagesElement(notification)
+                chatNotificationContainer.appendChild(card)
+                break;
+            default:
+                break;
+        }
+    }
+
+    function setupChatDropdownHeader(){
+        var notificationContainer = document.getElementById("id_chat_notifications_container")
+
+        if(notificationContainer != null){
+            var div = document.createElement("div")
+            div.classList.add("chat-dropdown-header", "d-flex", "flex-row", "justify-content-end", "m-auto", "align-items-end")
+            div.addEventListener("click", function(e){
+                var url = "{% url 'chat:private_chat_room' %}"
+                chatRedirect(url)
+            })
+
+            span_chat = document.createElement("span")
+            span_chat.classList.add("mr-2")
+            span_chat.innerHTML = "Go to chat "
+            div.appendChild(span_chat)
+
+            i_chat = document.createElement("i")
+            i_chat.classList.add("far", "fa-comments")
+            span_chat.appendChild(i_chat)
+
+            notificationContainer.appendChild(div)
+        }
+    }
+
+    function chatRedirect(url){
+        window.location.href = url
+    }
+</script>
+
+<script type="text/javascript">
+
+    function getUnreadChatNotificationsCount(pageNumber){
+        if("{{request.user.is_authenticated}}"){
+            notificationSocket.send(JSON.stringify({
+                "command": "get_unread_chat_notifications_count",
+                "page_number": pageNumber
+            }))
+        }
+    }
+
+    function getNextChatNotificationsPage(){
+        var pageNumber = document.getElementById("id_chat_page_number").innerHTML
+        if("{{request.user.is_authenticated}}" && pageNumber != "-1"){
+            notificationSocket.send(JSON.stringify({
+                "command": "get_chat_notifications",
+                "page_number": pageNumber
+            }))
+            getUnreadChatNotificationsCount()
+        }
+    }
+    function getNewChatNotifications(){
+        newestTimestamp = document.getElementById("id_chat_newest_timestamp").innerHTML
+        if("{{request.user.is_authenticated}}"){
+            notificationSocket.send(JSON.stringify({
+                "command": "get_new_chat_notifications",
+                "newest_timestamp": newestTimestamp,
+            }))
+        }
+    }
+
+    function getFirstChatNotificationsPage(){
+        if("{{request.user.is_authenticated}}"){
+            notificationSocket.send(JSON.stringify({
+                "command": "get_chat_notifications",
+                "page_number": "1",
+            }))
+        }
+    }
+
+    function startChatNotificationService(){
+        if("{{request.user.is_authenticated}}"){
+            setInterval(getNewChatNotifications, CHAT_NOTIFICATION_INTERVAL)
+            setInterval(getUnreadChatNotificationsCount, CHAT_NOTIFICATION_INTERVAL)
+        }
+    }
+
+    startChatNotificationService()
+
+</script>
+
+<script type="text/javascript">
+	/**
+		Helpers for assigning ids to important elements.
+	**/
+	function assignChatDiv1Id(notification){
+		return "id_chat_div1_" + notification['notification_id']
+	}
+
+	function assignChatImgId(notification){
+		return "id_chat_img_" + notification['notification_id']
+	}
+
+	function assignChatTitleId(notification){
+		return "id_chat_title_" + notification['notification_id']
+	}
+
+	function assignChatroomMessageId(notification){
+		return "id_chat_message_" + notification['notification_id']
+	}
+
+	function assignChatDiv2Id(notification){
+		return "id_chat_div2_" + notification['notification_id']
+	}
+
+	function assignChatTimestampId(notification){
+		return "id_timestamp_" + notification['notification_id']
+	}
+
+	function assignChatCardId(notification){
+		return "id_notification_" + notification['notification_id']
+	}
+
+	function setChatInitialTimestamp(){
+		// ('%Y-%m-%d %H:%M:%S.%f')
+		var today = new Date();
+		var date = today.getFullYear() + "-01-01 01:00:00.000000"
+		document.getElementById("id_chat_newest_timestamp").innerHTML = date
+	}
+
+	setChatInitialTimestamp()
+</script>

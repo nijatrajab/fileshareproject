@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
 <div class="container mt-3">
@@ -32,7 +33,7 @@
                                 <div class="row">
                                     <div class="image-container mx-auto mb-4">
                                         <img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image"
-                                             alt="fileshare logo" id="id_profile_image" src="{{profile_image}}">
+                                             alt="fileshare logo" id="id_profile_image" src="{% static 'images/fs_default/default_profile_image.png' %}">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -145,6 +146,17 @@
                                     </a>
                                 </div>
 
+                                {% if is_friend %}
+                                <div class="d-flex flex-column pt-4">
+                                    <div class="d-flex flex-row align-items-center justify-content-center"
+                                         onclick="createOrReturnPrivateChat('{{id}}')">
+                                        <button class="btn btn-outline-info">
+                                            <i class="far fa-comment"></i> Message
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endif %}
+
                                 <!-- File list link -->
                                 <div class="d-flex flex-column pt-4">
                                     <a href="{% url 'fileup:filelist' user_id=id %}">
@@ -187,6 +199,7 @@
 </div>
 
 <script type="text/javascript">
+    preloadImage("{{profile_image|safe}}", 'id_profile_image')
 
     function onFriendRequestSent() {
         location.reload();
@@ -245,6 +258,7 @@
 {% include 'friend/snippets/decline_friend_request.html' %}
 {% include 'friend/snippets/cancel_friend_request.html' %}
 {% include 'friend/snippets/remove_friend.html' %}
+{% include 'chat/snippets/create_or_return_chat.html' %}
 
 {% endblock content %}
 

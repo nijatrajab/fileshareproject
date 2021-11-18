@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script>
+    (function () {
+        window.injectedScripts = [];
+
+        var head = document.querySelector("head")
+        var appendChild = head.appendChild;
+        head.appendChild = function (el) {
+            if (el.tagName === "SCRIPT") {
+                window.injectedScripts.push(el.src);
+                el.onerror = scriptError;
+            }
+            return appendChild.apply(head, arguments);
+        }
+
+        function scriptError(event) {
+            window.error = "Failed to load " + event.target.src;
+        }
+    }())
+    </script>
+    <script src="node_modules/mr/bootstrap.js" data-module="index"></script>
+</head>
+<body>
+
+</body>
+</html>

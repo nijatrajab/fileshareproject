@@ -1,0 +1,10 @@
+{
+  "name": "module",
+  "version": "0.0.0",
+  "private": "true",
+  "dependencies": {
+    "mr": "*"
+  },
+  "bundle": ["second"],
+  "shard": 2
+}

@@ -34,6 +34,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'guardian',
+    'permission',
+    'user',
+    'friend',
+    'fileup',
+    'chat',
+    'notification',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,10 +53,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'imagekit',
-    'user',
-    'friend',
-    'fileup',
-    'guardian',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -89,6 +93,19 @@ AUTHENTICATION_BACKENDS = (
 )
 
 WSGI_APPLICATION = 'fileshare.wsgi.application'
+
+ASGI_APPLICATION = 'fileshare.routing.application'
+
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -184,4 +201,4 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 BASE_URL = "http://127.0.0.1:8000"
 
-GUARDIAN_USER_OBJ_PERMS_MODEL = 'user.BigUserObjectPermission'
+GUARDIAN_USER_OBJ_PERMS_MODEL = 'permission.BigUserObjectPermission'

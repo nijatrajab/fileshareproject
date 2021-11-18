@@ -1,28 +1,14 @@
 version: "3.8"
 
 services:
-  fileshare:
-    build:
-      context: .
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./fileshare:/fileshare
-    command: >
-      sh -c "python manage.py wait_for_db &&
-             python manage.py makemigrations user &&
-             python manage.py makemigrations friend &&
-             python manage.py makemigrations fileup &&
-             python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+  redis:
+    image: redis:6-alpine
     environment:
-      - DJANGO_SECRET_KEY=${DSK}
-      - DB_HOST=db
-      - DB_NAME=fileshare
-      - DB_USER=testadmin
-      - DB_PASS=${DP}
-    depends_on:
-      - db
+      - REDIS_HOST=redis
+    ports:
+      - "6379:6379"
+    command: >
+      sh -c "redis-server"
 
   db:
     container_name: pg_fileshareproject
@@ -34,6 +20,36 @@ services:
     ports:
       - "5432:5432"
 
+  fileshare:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fileshare:/fileshare
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py makemigrations permission &&
+             python manage.py makemigrations user &&
+             python manage.py makemigrations friend &&
+             python manage.py makemigrations fileup &&
+             python manage.py makemigrations chat &&
+             python manage.py makemigrations notification &&
+             python manage.py migrate &&
+             python -u manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DJANGO_SECRET_KEY=${DSK}
+      - DB_HOST=db
+      - DB_NAME=fileshare
+      - DB_USER=testadmin
+      - DB_PASS=${DP}
+    depends_on:
+      - db
+      - redis
+    links:
+      - db
+      - redis
+
   pgadmin:
     container_name: pgadmin4_fileshareproject
     image: dpage/pgadmin4
@@ -43,3 +59,11 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGDP}
     ports:
       - "5050:80"
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.25.0.0/24
+         gateway: 172.25.0.1

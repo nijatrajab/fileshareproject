@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-
     {% block stylesheets %}
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome5/css/all.css' %}">
@@ -44,6 +43,7 @@
 {% include "fileup/file_detail.html" %}
 
 {% include "_header.html" %}
+{% include "snippets/base_js.html" %}
 
 {% block content %}{% endblock %}
 
@@ -70,8 +70,5 @@
 
 {% endblock scripts %}
 
-{% block extrascripts %}
-<script src="{% static 'custom/js/script.js' %}" type="text/javascript"></script>
-{% endblock extrascripts %}
 </body>
 </html>
